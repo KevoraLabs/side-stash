@@ -35,11 +35,26 @@
   "panelSubtitle": {
     "message": "Quickly stash text, links, and images"
   },
+  "panelMode": {
+    "message": "Inbox"
+  },
+  "languageLabel": {
+    "message": "Language"
+  },
+  "languageAuto": {
+    "message": "Auto"
+  },
   "emptyTitle": {
     "message": "Nothing saved yet"
   },
   "emptyHint": {
     "message": "Right-click on a page to save text, links, or images."
+  },
+  "emptyFilteredTitle": {
+    "message": "No matches found"
+  },
+  "emptyFilteredHint": {
+    "message": "Try a different keyword or switch filters."
   },
   "countLabel": {
     "message": "items"
@@ -62,11 +77,44 @@
   "filterPlaceholder": {
     "message": "Filter by URL or keyword"
   },
+  "filterGroupLabel": {
+    "message": "Filter by type"
+  },
   "filterClear": {
     "message": "Clear"
   },
+  "searchLabel": {
+    "message": "Search saved items"
+  },
+  "searchTitle": {
+    "message": "Search stash"
+  },
+  "searchHint": {
+    "message": "Search content, title, source, or URL"
+  },
+  "searchActive": {
+    "message": "Filtering"
+  },
+  "searchKicker": {
+    "message": "Type to narrow instantly"
+  },
+  "searchKickerActive": {
+    "message": "Matching content and source"
+  },
   "selectAll": {
     "message": "Select all"
+  },
+  "selectedCount": {
+    "message": "$1 selected"
+  },
+  "selectionHint": {
+    "message": "Ready for bulk actions"
+  },
+  "shownCount": {
+    "message": "$1 shown"
+  },
+  "resetFilters": {
+    "message": "Reset"
   },
   "clearSelection": {
     "message": "Clear selection"

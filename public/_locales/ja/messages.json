@@ -35,11 +35,26 @@
   "panelSubtitle": {
     "message": "テキスト、リンク、画像をすばやく保存"
   },
+  "panelMode": {
+    "message": "INBOX"
+  },
+  "languageLabel": {
+    "message": "言語"
+  },
+  "languageAuto": {
+    "message": "自動"
+  },
   "emptyTitle": {
     "message": "保存された項目はありません"
   },
   "emptyHint": {
     "message": "ページで右クリックしてテキスト、リンク、画像を保存します。"
+  },
+  "emptyFilteredTitle": {
+    "message": "一致する項目がありません"
+  },
+  "emptyFilteredHint": {
+    "message": "別のキーワードを試すか、フィルターを切り替えてください。"
   },
   "countLabel": {
     "message": "件"
@@ -62,11 +77,44 @@
   "filterPlaceholder": {
     "message": "URL またはキーワードで絞り込み"
   },
+  "filterGroupLabel": {
+    "message": "種類で絞り込み"
+  },
   "filterClear": {
     "message": "クリア"
   },
+  "searchLabel": {
+    "message": "保存済み項目を検索"
+  },
+  "searchTitle": {
+    "message": "クイック検索"
+  },
+  "searchHint": {
+    "message": "本文、タイトル、出典、URL を検索"
+  },
+  "searchActive": {
+    "message": "絞り込み中"
+  },
+  "searchKicker": {
+    "message": "入力するとすぐに絞り込まれます"
+  },
+  "searchKickerActive": {
+    "message": "本文と出典を照合中"
+  },
   "selectAll": {
     "message": "すべて選択"
+  },
+  "selectedCount": {
+    "message": "$1 件を選択"
+  },
+  "selectionHint": {
+    "message": "一括操作の準備完了"
+  },
+  "shownCount": {
+    "message": "$1 件を表示"
+  },
+  "resetFilters": {
+    "message": "リセット"
   },
   "clearSelection": {
     "message": "選択解除"

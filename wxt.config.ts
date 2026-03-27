@@ -1,6 +1,12 @@
 import { defineConfig } from 'wxt';
 
 export default defineConfig({
+  modules: ['@wxt-dev/module-react'],
+  vite: () => ({
+    server: {
+      hmr: false,
+    },
+  }),
   manifest: {
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',

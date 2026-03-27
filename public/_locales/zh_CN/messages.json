@@ -35,11 +35,26 @@
   "panelSubtitle": {
     "message": "随手保存的文本、链接与图片"
   },
+  "panelMode": {
+    "message": "收集箱"
+  },
+  "languageLabel": {
+    "message": "语言"
+  },
+  "languageAuto": {
+    "message": "跟随浏览器"
+  },
   "emptyTitle": {
     "message": "还没有保存内容"
   },
   "emptyHint": {
     "message": "在网页右键即可保存文本、链接或图片。"
+  },
+  "emptyFilteredTitle": {
+    "message": "没有匹配结果"
+  },
+  "emptyFilteredHint": {
+    "message": "试试其他关键词，或者切换筛选条件。"
   },
   "countLabel": {
     "message": "条"
@@ -62,11 +77,44 @@
   "filterPlaceholder": {
     "message": "按网址或关键词筛选"
   },
+  "filterGroupLabel": {
+    "message": "按类型筛选"
+  },
   "filterClear": {
     "message": "清空"
   },
+  "searchLabel": {
+    "message": "搜索已保存内容"
+  },
+  "searchTitle": {
+    "message": "快速搜索"
+  },
+  "searchHint": {
+    "message": "可搜索正文、标题、来源或 URL"
+  },
+  "searchActive": {
+    "message": "筛选中"
+  },
+  "searchKicker": {
+    "message": "输入后立即缩小范围"
+  },
+  "searchKickerActive": {
+    "message": "正在匹配正文与来源"
+  },
   "selectAll": {
     "message": "全选"
+  },
+  "selectedCount": {
+    "message": "已选 $1 条"
+  },
+  "selectionHint": {
+    "message": "可执行批量操作"
+  },
+  "shownCount": {
+    "message": "显示 $1 条"
+  },
+  "resetFilters": {
+    "message": "重置"
   },
   "clearSelection": {
     "message": "取消全选"

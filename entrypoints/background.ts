@@ -1,4 +1,9 @@
 import { browser } from 'wxt/browser';
+import {
+  getLanguagePreferenceKey,
+  initializeI18n,
+  t,
+} from '../lib/i18n';
 
 const MENU_TEXT_ID = 'side-stash-save-text';
 const MENU_LINK_ID = 'side-stash-save-link';
@@ -12,9 +17,6 @@ type ContextData = {
   imageAlt: string;
   imageUrl: string;
 };
-
-const t = (key: string, fallback: string, substitutions?: string | string[]) =>
-  browser.i18n.getMessage(key, substitutions) || fallback;
 
 const createMenus = () => {
   browser.contextMenus.create({
@@ -105,14 +107,25 @@ const addItem = async (item: Record<string, unknown>) => {
 
 export default defineBackground(() => {
   browser.runtime.onInstalled.addListener(() => {
-    void refreshMenus();
+    void initializeI18n().then(() => refreshMenus());
     setPanelBehavior();
   });
 
   browser.runtime.onStartup.addListener(() => {
-    void refreshMenus();
+    void initializeI18n().then(() => refreshMenus());
     setPanelBehavior();
   });
+
+  browser.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== 'local' || !changes[getLanguagePreferenceKey()]) {
+      return;
+    }
+
+    void initializeI18n().then(() => refreshMenus());
+  });
+
+  void initializeI18n().then(() => refreshMenus());
+  setPanelBehavior();
 
 
   browser.contextMenus.onClicked.addListener(async (info, tab) => {
