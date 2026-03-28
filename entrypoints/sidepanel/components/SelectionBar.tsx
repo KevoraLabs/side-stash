@@ -17,16 +17,14 @@ export function SelectionBar({ selectedCount, visible, onClear, onCopy, onDelete
   }
 
   return (
-    <div className="selection-bar is-visible">
-      <div className="selection-bar-copy">
-        <span className="selection-bar-label">
+    <div className="fixed inset-x-3.5 bottom-3.5 z-40 flex flex-col gap-3 rounded-[20px] border border-slate-800/10 bg-slate-950/96 p-3 text-slate-50 shadow-[0_24px_48px_rgba(15,23,42,0.28)] backdrop-blur-xl min-[421px]:flex-row min-[421px]:items-center min-[421px]:justify-between">
+      <div className="grid gap-0.5">
+        <span className="text-[13px] font-semibold tracking-[-0.01em]">
           {t('selectedCount', '$1 selected', [String(selectedCount)])}
         </span>
-        <span className="selection-bar-hint">
-          {t('selectionHint', 'Ready for bulk actions')}
-        </span>
+        <span className="text-[11px] text-slate-300/75">{t('selectionHint', 'Ready for bulk actions')}</span>
       </div>
-      <div className="selection-bar-actions">
+      <div className="flex flex-wrap gap-2">
         <Button type="button" variant="secondary" onClick={onClear}>
           {t('clearSelection', 'Clear selection')}
         </Button>

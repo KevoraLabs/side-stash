@@ -2,6 +2,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import React, { forwardRef } from 'react';
 import type { ComponentPropsWithoutRef, ElementRef } from 'react';
+import { cn } from '../../lib/cn';
 
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
@@ -15,7 +16,7 @@ export const DialogOverlay = forwardRef<
   return (
     <DialogPrimitive.Overlay
       ref={ref}
-      className={['ui-dialog-overlay', className].filter(Boolean).join(' ')}
+      className={cn('fixed inset-0 z-30 bg-slate-950/42 backdrop-blur-[6px]', className)}
       {...props}
     />
   );
@@ -30,11 +31,17 @@ export const DialogContent = forwardRef<
       <DialogOverlay />
       <DialogPrimitive.Content
         ref={ref}
-        className={['ui-dialog-content', className].filter(Boolean).join(' ')}
+        className={cn(
+          'fixed top-1/2 left-1/2 z-[31] w-[min(calc(100vw-28px),360px)] max-h-[calc(100vh-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[22px] border border-slate-200/80 bg-white p-[18px] shadow-[0_24px_48px_rgba(15,23,42,0.18)] outline-none',
+          className,
+        )}
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="ui-dialog-close" type="button">
+        <DialogPrimitive.Close
+          className="absolute top-3 right-3 grid size-8 place-items-center rounded-[10px] border border-transparent bg-transparent text-slate-400 outline-none transition hover:bg-slate-100 hover:text-slate-700 focus-visible:ring-4 focus-visible:ring-blue-500/12"
+          type="button"
+        >
           <X aria-hidden="true" />
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
@@ -47,7 +54,7 @@ export const DialogHeader = ({
   className = '',
   ...props
 }: ComponentPropsWithoutRef<'div'>) => (
-  <div className={['ui-dialog-header', className].filter(Boolean).join(' ')} {...props}>
+  <div className={cn('mb-3 grid gap-1.5', className)} {...props}>
     {children}
   </div>
 );
@@ -57,7 +64,7 @@ export const DialogFooter = ({
   className = '',
   ...props
 }: ComponentPropsWithoutRef<'div'>) => (
-  <div className={['ui-dialog-footer', className].filter(Boolean).join(' ')} {...props}>
+  <div className={cn('mt-3.5 flex justify-end gap-2', className)} {...props}>
     {children}
   </div>
 );
@@ -69,7 +76,7 @@ export const DialogTitle = forwardRef<
   return (
     <DialogPrimitive.Title
       ref={ref}
-      className={['ui-dialog-title', className].filter(Boolean).join(' ')}
+      className={cn('m-0 text-[18px] font-semibold tracking-[-0.03em] text-slate-950', className)}
       {...props}
     />
   );
@@ -82,7 +89,7 @@ export const DialogDescription = forwardRef<
   return (
     <DialogPrimitive.Description
       ref={ref}
-      className={['ui-dialog-description', className].filter(Boolean).join(' ')}
+      className={cn('m-0 text-[13px] leading-5 text-slate-500', className)}
       {...props}
     />
   );

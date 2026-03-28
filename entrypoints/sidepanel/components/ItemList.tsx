@@ -18,7 +18,7 @@ export function ItemList({
   onToggleItem,
 }: ItemListProps) {
   return (
-    <ul className="item-list" aria-live="polite">
+    <ul className="m-0 grid list-none gap-2.5 p-0" aria-live="polite">
       {items.map((item) => (
         <ItemRow
           key={item.id}

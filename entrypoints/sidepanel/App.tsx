@@ -231,7 +231,7 @@ export function App() {
   };
 
   return (
-    <div className="panel-shell">
+    <div className="min-h-screen px-3.5 pt-3.5 pb-28 text-slate-700">
       <Header
         languageSelectValue={languageSelectValue}
         resolvedLocaleLabel={getLocaleLabel(resolvedLocale)}
@@ -241,7 +241,7 @@ export function App() {
         }}
       />
 
-      <div className="panel-controls">
+      <div className="sticky top-[126px] z-20 mb-3 max-[420px]:top-[174px]">
         <FilterBar
           activeFilter={activeFilter}
           allFilteredSelected={allFilteredSelected}
@@ -261,7 +261,7 @@ export function App() {
         />
       </div>
 
-      <main className="panel-content">
+      <main className="grid gap-2.5">
         {filteredItems.length === 0 ? (
           <EmptyState
             hasActiveFilters={hasActiveFilters}

@@ -35,7 +35,9 @@ export function ConfirmDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <p className="confirm-value">{value}</p>
+        <p className="m-0 rounded-[16px] border border-slate-200/80 bg-slate-50 px-3.5 py-3 text-[13px] leading-5 text-slate-700 break-words">
+          {value}
+        </p>
 
         <DialogFooter>
           <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
