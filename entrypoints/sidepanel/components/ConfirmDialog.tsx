@@ -35,7 +35,7 @@ export function ConfirmDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <p className="m-0 rounded-[16px] border border-slate-200/80 bg-slate-50 px-3.5 py-3 text-[13px] leading-5 text-slate-700 break-words">
+        <p className="m-0 break-words rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-xs leading-relaxed text-zinc-700 transition-colors dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
           {value}
         </p>
 

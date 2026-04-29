@@ -1,0 +1,161 @@
+{
+  "extName": {
+    "message": "Side Stash"
+  },
+  "extDescription": {
+    "message": "선택한 텍스트 또는 링크를 사이드 패널 목록에 저장합니다."
+  },
+  "menuSaveText": {
+    "message": "텍스트를 사이드 패널에 저장"
+  },
+  "menuSaveLink": {
+    "message": "링크를 사이드 패널에 저장"
+  },
+  "menuSaveImage": {
+    "message": "이미지를 사이드 패널에 저장"
+  },
+  "actionDelete": {
+    "message": "삭제"
+  },
+  "actionCopy": {
+    "message": "복사"
+  },
+  "confirmDelete": {
+    "message": "이 항목을 삭제하시겠습니까?"
+  },
+  "confirmTitle": {
+    "message": "항목 삭제"
+  },
+  "confirmCancel": {
+    "message": "취소"
+  },
+  "panelTitle": {
+    "message": "Side Stash"
+  },
+  "panelSubtitle": {
+    "message": "텍스트, 링크, 이미지를 빠르게 저장"
+  },
+  "panelMode": {
+    "message": "받은 편지함"
+  },
+  "languageLabel": {
+    "message": "언어"
+  },
+  "languageAuto": {
+    "message": "자동"
+  },
+  "emptyTitle": {
+    "message": "저장된 항목이 없습니다"
+  },
+  "emptyHint": {
+    "message": "페이지에서 마우스 오른쪽 버튼을 클릭하여 텍스트, 링크 또는 이미지를 저장하세요."
+  },
+  "emptyFilteredTitle": {
+    "message": "일치하는 항목이 없습니다"
+  },
+  "emptyFilteredHint": {
+    "message": "다른 키워드를 시도하거나 필터를 변경해 보세요."
+  },
+  "countLabel": {
+    "message": "개"
+  },
+  "sourceLabel": {
+    "message": "출처"
+  },
+  "filterAll": {
+    "message": "전체"
+  },
+  "filterText": {
+    "message": "텍스트"
+  },
+  "filterLink": {
+    "message": "링크"
+  },
+  "filterImage": {
+    "message": "이미지"
+  },
+  "filterPlaceholder": {
+    "message": "URL 또는 키워드로 필터링"
+  },
+  "filterGroupLabel": {
+    "message": "유형별 필터링"
+  },
+  "filterClear": {
+    "message": "지우기"
+  },
+  "searchLabel": {
+    "message": "저장된 항목 검색"
+  },
+  "searchTitle": {
+    "message": "빠른 검색"
+  },
+  "searchHint": {
+    "message": "내용, 제목, 출처 또는 URL 검색"
+  },
+  "searchActive": {
+    "message": "필터링 중"
+  },
+  "searchKicker": {
+    "message": "입력 즉시 범위가 좁혀집니다"
+  },
+  "searchKickerActive": {
+    "message": "내용 및 출처 매칭 중"
+  },
+  "selectAll": {
+    "message": "모두 선택"
+  },
+  "selectedCount": {
+    "message": "$1개 선택됨"
+  },
+  "selectionHint": {
+    "message": "일괄 작업 준비 완료"
+  },
+  "shownCount": {
+    "message": "$1개 표시"
+  },
+  "resetFilters": {
+    "message": "초기화"
+  },
+  "clearSelection": {
+    "message": "선택 해제"
+  },
+  "copySelected": {
+    "message": "복사"
+  },
+  "deleteSelected": {
+    "message": "삭제"
+  },
+  "copySuccess": {
+    "message": "$1개를 복사했습니다."
+  },
+  "copyEmpty": {
+    "message": "복사할 항목이 없습니다."
+  },
+  "copyNoneSelected": {
+    "message": "선택된 항목이 없습니다."
+  },
+  "deleteNoneSelected": {
+    "message": "선택된 항목이 없습니다."
+  },
+  "confirmDeleteMultiple": {
+    "message": "$1개를 삭제하시겠습니까?"
+  },
+  "confirmSelectedCount": {
+    "message": "선택된 항목: $1"
+  },
+  "copySingleSuccess": {
+    "message": "복사되었습니다."
+  },
+  "copyFailed": {
+    "message": "복사에 실패했습니다."
+  },
+  "badgeText": {
+    "message": "텍스트"
+  },
+  "badgeLink": {
+    "message": "링크"
+  },
+  "badgeImage": {
+    "message": "이미지"
+  }
+}

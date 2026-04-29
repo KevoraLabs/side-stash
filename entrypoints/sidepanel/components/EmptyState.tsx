@@ -13,20 +13,20 @@ export function EmptyState({ hasActiveFilters, hasItems, onResetFilters }: Empty
   const Icon = hasItems ? SearchX : ArchiveX;
 
   return (
-    <div className="grid justify-items-center gap-3 rounded-[24px] border border-dashed border-slate-300/80 bg-white/74 px-5 py-12 text-center shadow-[0_8px_20px_rgba(15,23,42,0.05)]">
-      <div className="grid size-14 place-items-center rounded-[18px] bg-blue-50 text-blue-700">
-        <Icon className="size-6" aria-hidden="true" />
+    <div className="grid h-full min-h-[220px] place-content-center justify-items-center gap-3 px-3 py-6 text-center">
+      <div className="grid size-12 place-items-center rounded-lg border border-zinc-200 bg-zinc-50 text-zinc-400 transition-colors dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500">
+        <Icon className="size-6 opacity-80" aria-hidden="true" />
       </div>
-      <h2 className="m-0 text-[18px] font-semibold tracking-[-0.03em] text-slate-950">
+      <h2 className="m-0 text-[15px] font-semibold text-zinc-950 transition-colors dark:text-zinc-100">
         {hasItems ? t('emptyFilteredTitle', 'No matches found') : t('emptyTitle', 'Nothing saved yet')}
       </h2>
-      <p className="m-0 max-w-[260px] text-[13px] leading-6 text-slate-500">
+      <p className="m-0 max-w-[260px] text-xs leading-5 text-zinc-500 transition-colors dark:text-zinc-400">
         {hasItems
           ? t('emptyFilteredHint', 'Try a different keyword or switch filters.')
           : t('emptyHint', 'Right-click on a page to save text, links, or images.')}
       </p>
       {hasItems && hasActiveFilters ? (
-        <Button type="button" variant="ghost" onClick={onResetFilters}>
+        <Button className="mt-1" size="sm" type="button" variant="secondary" onClick={onResetFilters}>
           {t('resetFilters', 'Reset')}
         </Button>
       ) : null}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import type { InputHTMLAttributes } from 'react';
 import { cn } from '../../lib/cn';
 
@@ -6,14 +6,15 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   className?: string;
 };
 
-export function Input({ className = '', ...props }: InputProps) {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({ className = '', ...props }, ref) {
   return (
     <input
+      ref={ref}
       className={cn(
-        'w-full min-w-0 rounded-xl border border-slate-200/80 bg-white px-3.5 py-2.5 text-[14px] text-slate-700 shadow-[0_8px_20px_rgba(15,23,42,0.04)] outline-none transition placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-500/10 disabled:pointer-events-none disabled:opacity-50',
+        'w-full min-w-0 rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/15 disabled:pointer-events-none disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500',
         className,
       )}
       {...props}
     />
   );
-}
+});

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Archive, ChevronDown, Inbox } from 'lucide-react';
+import { ChevronDown, Globe } from 'lucide-react';
 import type { LanguageSelectValue } from '../lib/i18n';
 import { t } from '../lib/i18n';
 
@@ -17,62 +17,45 @@ export function Header({
   onLanguageChange,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 mb-3 flex flex-col gap-4 rounded-[26px] border border-slate-200/80 bg-white/82 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl min-[421px]:flex-row min-[421px]:items-start min-[421px]:justify-between">
-      <div className="flex min-w-0 gap-3.5">
-        <div className="grid size-11 shrink-0 place-items-center rounded-[18px] border border-blue-200/60 bg-linear-to-b from-blue-50 to-slate-50 text-blue-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
-          <Archive className="size-[18px]" aria-hidden="true" />
-        </div>
-
+    <header className="mb-3 flex items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center gap-2.5">
+        <img
+          alt=""
+          aria-hidden="true"
+          className="size-10 shrink-0 rounded-xl shadow-sm"
+          src="/icon-48.png"
+        />
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-[19px] font-semibold tracking-[-0.03em] text-slate-950">
-              {t('panelTitle', 'Side Stash')}
-            </h1>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-semibold tracking-[0.08em] text-blue-700 uppercase">
-              <Inbox className="size-3" aria-hidden="true" />
-              {t('panelMode', 'Inbox')}
-            </span>
-          </div>
-          <p className="mt-1.5 text-[12px] leading-5 text-slate-500">
-            {t('panelSubtitle', 'Quickly stash text, links, and images')}
+          <h1 className="truncate text-[17px] font-semibold text-zinc-950 transition-colors dark:text-zinc-50">
+            {t('panelTitle', 'Side Stash')}
+          </h1>
+          <p className="mt-0.5 truncate text-xs text-zinc-500 dark:text-zinc-400">
+            {totalCount} {t('countLabel', 'items')}
           </p>
         </div>
       </div>
 
-      <div className="grid gap-3 min-[421px]:justify-items-end">
-        <div className="grid gap-1 min-[421px]:justify-items-end">
-          <span className="text-[28px] leading-none font-semibold tracking-[-0.07em] text-slate-950 max-[420px]:text-[24px]">
-            {totalCount}
-          </span>
-          <span className="text-[10px] font-semibold tracking-[0.18em] text-slate-400 uppercase">
-            {t('countLabel', 'items')}
-          </span>
-        </div>
-
-        <label className="grid gap-1.5 max-[420px]:justify-items-stretch min-[421px]:justify-items-end">
-          <span className="text-[10px] font-semibold tracking-[0.18em] text-slate-400 uppercase">
-            {t('languageLabel', 'Language')}
-          </span>
-          <span className="relative block w-full min-[421px]:w-[172px]">
-            <select
-              className="h-10 w-full appearance-none rounded-[14px] border border-slate-200/80 bg-white/92 pr-10 pl-3 text-[12px] font-semibold text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.04)] outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-500/10"
-              value={languageSelectValue}
-              onChange={(event) => onLanguageChange(event.target.value as LanguageSelectValue)}
-            >
-              <option value="auto">
-                {t('languageAuto', 'Auto')} · {resolvedLocaleLabel}
-              </option>
-              <option value="en">English</option>
-              <option value="zh_CN">简体中文</option>
-              <option value="ja">日本語</option>
-            </select>
-            <ChevronDown
-              className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-slate-400"
-              aria-hidden="true"
-            />
-          </span>
-        </label>
-      </div>
+      <label className="relative block shrink-0" title={resolvedLocaleLabel}>
+        <Globe className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-zinc-400 transition-colors" aria-hidden="true" />
+        <select
+          aria-label={t('languageLabel', 'Language')}
+          className="h-8 w-[112px] appearance-none rounded-lg border border-zinc-200 bg-white pr-7 pl-7 text-left text-xs font-medium text-zinc-700 outline-none transition-colors hover:bg-zinc-50 focus:ring-2 focus:ring-sky-500/25 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:bg-zinc-900"
+          value={languageSelectValue}
+          onChange={(event) => onLanguageChange(event.target.value as LanguageSelectValue)}
+        >
+          <option value="auto">{t('languageAuto', 'Auto')}</option>
+          <option value="en">English</option>
+          <option value="zh_CN">简体中文</option>
+          <option value="zh_TW">繁體中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="es">Español</option>
+          <option value="pt_BR">Português</option>
+        </select>
+        <ChevronDown className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 text-zinc-400 transition-colors" aria-hidden="true" />
+      </label>
     </header>
   );
 }

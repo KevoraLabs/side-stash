@@ -12,6 +12,18 @@ export function getCopyValue(item: SavedItem) {
   return item.content;
 }
 
+export function getOpenUrl(item: SavedItem) {
+  if (item.type === 'link') {
+    return item.linkUrl || item.pageUrl || '';
+  }
+
+  if (item.type === 'image') {
+    return item.imageUrl || item.pageUrl || '';
+  }
+
+  return item.pageUrl || '';
+}
+
 function getHostname(url?: string) {
   if (!url) {
     return '';

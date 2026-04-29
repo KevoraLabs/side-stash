@@ -20,6 +20,9 @@
   "actionCopy": {
     "message": "复制"
   },
+  "actionOpen": {
+    "message": "打开"
+  },
   "confirmDelete": {
     "message": "确定删除该条目？"
   },
@@ -42,7 +45,7 @@
     "message": "语言"
   },
   "languageAuto": {
-    "message": "跟随浏览器"
+    "message": "自动"
   },
   "emptyTitle": {
     "message": "还没有保存内容"
@@ -148,6 +151,15 @@
   },
   "copyFailed": {
     "message": "复制失败。"
+  },
+  "openUnavailable": {
+    "message": "没有可打开的网址。"
+  },
+  "selectItem": {
+    "message": "选择条目"
+  },
+  "deselectItem": {
+    "message": "取消选择条目"
   },
   "badgeText": {
     "message": "文本"

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Search, X } from 'lucide-react';
+import type { RefObject } from 'react';
+import { FileText, Image as ImageIcon, Link2, ListFilter, Search, X } from 'lucide-react';
 import { cn } from '../lib/cn';
 import { t } from '../lib/i18n';
 import type { ItemFilter } from '../types';
@@ -15,10 +16,9 @@ type FilterBarProps = {
   hasFilteredItems: boolean;
   hasPartialSelection: boolean;
   query: string;
+  searchInputRef: RefObject<HTMLInputElement | null>;
   selectedCount: number;
-  statusMessage: string;
   onClearQuery: () => void;
-  onClearSelection: () => void;
   onFilterChange: (filter: ItemFilter) => void;
   onQueryChange: (value: string) => void;
   onResetFilters: () => void;
@@ -35,70 +35,49 @@ export function FilterBar({
   hasFilteredItems,
   hasPartialSelection,
   query,
+  searchInputRef,
   selectedCount,
-  statusMessage,
   onClearQuery,
-  onClearSelection,
   onFilterChange,
   onQueryChange,
   onResetFilters,
   onToggleSelectAll,
 }: FilterBarProps) {
   return (
-    <section className="grid gap-3 rounded-[22px] border border-slate-200/80 bg-white/78 p-3.5 shadow-[0_10px_28px_rgba(15,23,42,0.06)] backdrop-blur-xl">
-      <div className="w-full">
-        <div className="mb-2 flex flex-col gap-2 min-[421px]:flex-row min-[421px]:items-start min-[421px]:justify-between">
-          <div className="grid min-w-0 gap-0.5">
-            <span className="text-[12px] font-semibold tracking-[0.1em] text-slate-950 uppercase">
-              {t('searchTitle', 'Search stash')}
-            </span>
-            <span className="text-[12px] leading-5 text-slate-500">
-              {t('searchHint', 'Search content, title, source, or URL')}
-            </span>
-          </div>
-          {query ? (
-            <span className="inline-flex h-6 items-center rounded-full bg-blue-50 px-2.5 text-[11px] font-semibold tracking-[0.08em] text-blue-700 uppercase">
-              {t('searchActive', 'Filtering')}
-            </span>
-          ) : null}
-        </div>
-        <label className="group flex min-h-[88px] w-full items-center gap-3 rounded-[24px] border border-blue-200/40 bg-linear-to-b from-white via-slate-50 to-blue-50/70 px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_12px_24px_rgba(15,23,42,0.04)] transition focus-within:border-blue-300 focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_0_0_4px_rgba(59,130,246,0.08),0_18px_32px_rgba(37,99,235,0.12)]">
-          <span className="grid size-11 shrink-0 place-items-center rounded-[18px] bg-blue-600/10 text-blue-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
-            <Search className="size-[18px]" aria-hidden="true" />
+    <section className="mb-0 grid gap-3">
+      <label className="relative block">
+        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400 transition-colors" aria-hidden="true" />
+        <Input
+          ref={searchInputRef}
+          aria-label={t('searchLabel', 'Search saved items')}
+          className="h-10 pl-9 pr-16"
+          placeholder={t('filterPlaceholder', 'Search snippets...')}
+          type="search"
+          value={query}
+          onChange={(event) => onQueryChange(event.target.value)}
+        />
+        {!query ? (
+          <span className="pointer-events-none absolute top-1/2 right-3 hidden -translate-y-1/2 rounded border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 text-[10px] font-semibold text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500 min-[360px]:inline-flex">
+            /
           </span>
-          <span className="grid min-w-0 flex-1 gap-1">
-            <span className="text-[10px] font-semibold tracking-[0.18em] text-slate-400 uppercase">
-              {query
-                ? t('searchKickerActive', 'Matching content and source')
-                : t('searchKicker', 'Type to narrow instantly')}
-            </span>
-            <Input
-              aria-label={t('searchLabel', 'Search saved items')}
-              className="h-auto border-0 bg-transparent p-0 text-[17px] leading-6 font-semibold text-slate-950 shadow-none ring-0 placeholder:text-slate-400 focus-visible:ring-0"
-              placeholder={t('filterPlaceholder', 'Filter by URL or keyword')}
-              type="search"
-              value={query}
-              onChange={(event) => onQueryChange(event.target.value)}
-            />
-          </span>
-          {query ? (
-            <Button
-              aria-label={t('filterClear', 'Clear')}
-              className="size-9 rounded-[14px] border-transparent bg-slate-200/55 text-slate-500 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-              size="icon"
-              type="button"
-              variant="ghost"
-              onClick={onClearQuery}
-            >
-              <X aria-hidden="true" />
-            </Button>
-          ) : null}
-        </label>
-      </div>
+        ) : null}
+        {query ? (
+          <Button
+            aria-label={t('filterClear', 'Clear')}
+            className="absolute top-1/2 right-1 -translate-y-1/2 size-8"
+            size="icon"
+            type="button"
+            variant="ghost"
+            onClick={onClearQuery}
+          >
+            <X className="size-3.5" aria-hidden="true" />
+          </Button>
+        ) : null}
+      </label>
 
       <div
         aria-label={t('filterGroupLabel', 'Filter by type')}
-        className="flex flex-wrap gap-2"
+        className="grid grid-cols-4 rounded-lg border border-zinc-200 bg-zinc-100 p-1 dark:border-zinc-800 dark:bg-zinc-900"
         role="group"
       >
         {FILTERS.map((filter) => {
@@ -110,67 +89,54 @@ export function FilterBar({
                 : filter === 'link'
                   ? t('filterLink', 'Link')
                   : t('filterImage', 'Image');
+          const Icon =
+            filter === 'all'
+              ? ListFilter
+              : filter === 'text'
+                ? FileText
+                : filter === 'link'
+                  ? Link2
+                  : ImageIcon;
 
           return (
             <button
               key={filter}
               aria-pressed={activeFilter === filter}
               className={cn(
-                'rounded-full border px-3 py-1.5 text-[12px] font-semibold tracking-[-0.01em] transition',
+                'inline-flex h-7 min-w-0 items-center justify-center gap-1 rounded-md px-1.5 text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30',
                 activeFilter === filter
-                  ? 'border-blue-200 bg-blue-50 text-blue-700 shadow-[0_8px_18px_rgba(37,99,235,0.10)]'
-                  : 'border-slate-200/80 bg-white/72 text-slate-500 hover:border-blue-200 hover:bg-blue-50/70 hover:text-blue-700',
+                  ? 'bg-white text-zinc-950 shadow-sm dark:bg-zinc-950 dark:text-zinc-50'
+                  : 'text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-100',
               )}
               type="button"
               onClick={() => onFilterChange(filter)}
             >
-              {label}
+              <Icon className="size-3.5 shrink-0" aria-hidden="true" />
+              <span className="truncate">{label}</span>
             </button>
           );
         })}
       </div>
 
-      <div className="flex flex-col gap-2 min-[421px]:flex-row min-[421px]:items-center min-[421px]:justify-between">
-        <div className="flex min-w-0 flex-wrap items-center gap-3">
-          <label
-            className={cn(
-              'inline-flex items-center gap-2.5 text-[12px] font-semibold text-slate-600',
-              !hasFilteredItems && 'opacity-55',
-            )}
-          >
-            <Checkbox
-              checked={allFilteredSelected ? true : hasPartialSelection ? 'indeterminate' : false}
-              disabled={!hasFilteredItems}
-              onCheckedChange={(checked) => onToggleSelectAll(checked === true)}
-            />
-            <span>{t('selectAll', 'Select all')}</span>
-          </label>
-          <span className="text-[12px] text-slate-400">
-            {t('shownCount', '$1 shown', [String(filteredCount)])}
-          </span>
-        </div>
-
-        <div className="flex min-w-0 flex-wrap items-center gap-2.5">
-          {hasActiveFilters ? (
-            <Button size="sm" type="button" variant="ghost" onClick={onResetFilters}>
-              {t('resetFilters', 'Reset')}
-            </Button>
-          ) : null}
+      <div className="flex min-h-8 items-center justify-between gap-3 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs text-zinc-500 transition-colors dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+        <label
+          className={cn('inline-flex min-w-0 items-center gap-2 font-medium cursor-pointer group', !hasFilteredItems && 'opacity-50 pointer-events-none')}
+        >
+          <Checkbox
+            checked={allFilteredSelected ? true : hasPartialSelection ? 'indeterminate' : false}
+            disabled={!hasFilteredItems}
+            onCheckedChange={(checked) => onToggleSelectAll(checked === true)}
+          />
+          <span className="truncate group-hover:text-zinc-950 dark:group-hover:text-zinc-100">{t('selectAll', 'Select all')}</span>
           {selectedCount > 0 ? (
-            <Button size="sm" type="button" variant="ghost" onClick={onClearSelection}>
-              {t('clearSelection', 'Clear selection')}
-            </Button>
+            <span className="rounded-full bg-sky-50 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
+              {selectedCount}
+            </span>
           ) : null}
-          <span
-            className={cn(
-              'max-w-[160px] truncate text-[12px] text-blue-700 transition-opacity',
-              statusMessage ? 'opacity-100' : 'opacity-0',
-            )}
-            aria-live="polite"
-          >
-            {statusMessage}
-          </span>
-        </div>
+        </label>
+        <span className="shrink-0 text-xs font-medium text-zinc-500 transition-colors dark:text-zinc-400">
+          {t('shownCount', '$1 shown', [String(filteredCount)])}
+        </span>
       </div>
     </section>
   );

@@ -1,0 +1,161 @@
+{
+  "extName": {
+    "message": "Side Stash"
+  },
+  "extDescription": {
+    "message": "Sauvegardez du texte ou des liens dans un panneau latéral persistant."
+  },
+  "menuSaveText": {
+    "message": "Enregistrer le texte dans le panneau latéral"
+  },
+  "menuSaveLink": {
+    "message": "Enregistrer le lien dans le panneau latéral"
+  },
+  "menuSaveImage": {
+    "message": "Enregistrer l'image dans le panneau latéral"
+  },
+  "actionDelete": {
+    "message": "Supprimer"
+  },
+  "actionCopy": {
+    "message": "Copier"
+  },
+  "confirmDelete": {
+    "message": "Supprimer cet élément ?"
+  },
+  "confirmTitle": {
+    "message": "Supprimer l'élément"
+  },
+  "confirmCancel": {
+    "message": "Annuler"
+  },
+  "panelTitle": {
+    "message": "Side Stash"
+  },
+  "panelSubtitle": {
+    "message": "Sauvegardez rapidement textes, liens et images"
+  },
+  "panelMode": {
+    "message": "Boîte de réception"
+  },
+  "languageLabel": {
+    "message": "Langue"
+  },
+  "languageAuto": {
+    "message": "Auto"
+  },
+  "emptyTitle": {
+    "message": "Rien de sauvegardé"
+  },
+  "emptyHint": {
+    "message": "Faites un clic droit sur une page pour enregistrer du texte, des liens ou des images."
+  },
+  "emptyFilteredTitle": {
+    "message": "Aucun résultat"
+  },
+  "emptyFilteredHint": {
+    "message": "Essayez un mot-clé différent ou changez les filtres."
+  },
+  "countLabel": {
+    "message": "éléments"
+  },
+  "sourceLabel": {
+    "message": "Source"
+  },
+  "filterAll": {
+    "message": "Tout"
+  },
+  "filterText": {
+    "message": "Texte"
+  },
+  "filterLink": {
+    "message": "Lien"
+  },
+  "filterImage": {
+    "message": "Image"
+  },
+  "filterPlaceholder": {
+    "message": "Filtrer par URL ou mot-clé"
+  },
+  "filterGroupLabel": {
+    "message": "Filtrer par type"
+  },
+  "filterClear": {
+    "message": "Effacer"
+  },
+  "searchLabel": {
+    "message": "Rechercher les éléments sauvegardés"
+  },
+  "searchTitle": {
+    "message": "Recherche rapide"
+  },
+  "searchHint": {
+    "message": "Rechercher dans le contenu, titre, source ou URL"
+  },
+  "searchActive": {
+    "message": "Filtrage"
+  },
+  "searchKicker": {
+    "message": "Résultats immédiats"
+  },
+  "searchKickerActive": {
+    "message": "Correspondance contenu et source"
+  },
+  "selectAll": {
+    "message": "Tout sélectionner"
+  },
+  "selectedCount": {
+    "message": "$1 sélectionné(s)"
+  },
+  "selectionHint": {
+    "message": "Prêt pour les actions groupées"
+  },
+  "shownCount": {
+    "message": "$1 affiché(s)"
+  },
+  "resetFilters": {
+    "message": "Réinitialiser"
+  },
+  "clearSelection": {
+    "message": "Tout désélectionner"
+  },
+  "copySelected": {
+    "message": "Copier"
+  },
+  "deleteSelected": {
+    "message": "Supprimer"
+  },
+  "copySuccess": {
+    "message": "$1 élément(s) copié(s)."
+  },
+  "copyEmpty": {
+    "message": "Aucun élément à copier."
+  },
+  "copyNoneSelected": {
+    "message": "Aucun élément sélectionné."
+  },
+  "deleteNoneSelected": {
+    "message": "Aucun élément sélectionné."
+  },
+  "confirmDeleteMultiple": {
+    "message": "Supprimer $1 élément(s) ?"
+  },
+  "confirmSelectedCount": {
+    "message": "Éléments sélectionnés : $1"
+  },
+  "copySingleSuccess": {
+    "message": "Copié."
+  },
+  "copyFailed": {
+    "message": "Échec de la copie."
+  },
+  "badgeText": {
+    "message": "TEXTE"
+  },
+  "badgeLink": {
+    "message": "LIEN"
+  },
+  "badgeImage": {
+    "message": "IMAGE"
+  }
+}

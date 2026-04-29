@@ -81,6 +81,44 @@ const buildId = () => {
   return `item-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 };
 
+const normalizeText = (value: string) =>
+  value.trim().replace(/\s+/g, ' ');
+
+const normalizeUrl = (value: string) => {
+  const raw = value.trim();
+  if (!raw) {
+    return '';
+  }
+
+  try {
+    const url = new URL(raw);
+    url.hash = '';
+    const hostname = url.hostname.toLowerCase();
+    const protocol = url.protocol.toLowerCase();
+    const pathname =
+      url.pathname.length > 1 && url.pathname.endsWith('/')
+        ? url.pathname.slice(0, -1)
+        : url.pathname;
+    return `${protocol}//${hostname}${pathname}${url.search}`;
+  } catch {
+    return raw;
+  }
+};
+
+const buildDedupKey = (item: Record<string, unknown>) => {
+  const type = String(item.type || '');
+  if (type === 'text') {
+    return `text:${normalizeText(String(item.content || ''))}`;
+  }
+  if (type === 'link') {
+    return `link:${normalizeUrl(String(item.linkUrl || item.content || ''))}`;
+  }
+  if (type === 'image') {
+    return `image:${normalizeUrl(String(item.imageUrl || item.content || ''))}`;
+  }
+  return '';
+};
+
 const getImageLabel = (imageUrl: string, imageAlt: string) => {
   if (imageAlt) {
     return imageAlt;
@@ -101,6 +139,15 @@ const getImageLabel = (imageUrl: string, imageAlt: string) => {
 const addItem = async (item: Record<string, unknown>) => {
   const stored = await browser.storage.local.get(STORAGE_KEY);
   const items = Array.isArray(stored[STORAGE_KEY]) ? stored[STORAGE_KEY] : [];
+  const nextKey = buildDedupKey(item);
+  if (nextKey) {
+    const exists = items.some((storedItem: Record<string, unknown>) => {
+      return buildDedupKey(storedItem) === nextKey;
+    });
+    if (exists) {
+      return;
+    }
+  }
   items.unshift(item);
   await browser.storage.local.set({ [STORAGE_KEY]: items });
 };

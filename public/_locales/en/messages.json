@@ -20,6 +20,9 @@
   "actionCopy": {
     "message": "Copy"
   },
+  "actionOpen": {
+    "message": "Open"
+  },
   "confirmDelete": {
     "message": "Delete this item?"
   },
@@ -148,6 +151,15 @@
   },
   "copyFailed": {
     "message": "Copy failed."
+  },
+  "openUnavailable": {
+    "message": "No URL to open."
+  },
+  "selectItem": {
+    "message": "Select item"
+  },
+  "deselectItem": {
+    "message": "Deselect item"
   },
   "badgeText": {
     "message": "TEXT"

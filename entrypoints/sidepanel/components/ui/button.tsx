@@ -21,18 +21,18 @@ export function Button({
 }: ButtonProps) {
   const Comp = asChild ? Slot : 'button';
   const classes = cn(
-    'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border text-[13px] font-semibold tracking-[-0.01em] transition outline-none disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-4 focus-visible:ring-blue-500/12 [&_svg]:size-4',
-    size === 'default' && 'h-10 px-3.5',
-    size === 'sm' && 'h-8 px-3 text-[12px]',
-    size === 'icon' && 'size-9 rounded-[14px] p-0',
+    'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-sky-500/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-950 [&_svg]:size-4 active:translate-y-px',
+    size === 'default' && 'h-10 px-4',
+    size === 'sm' && 'h-8 px-3 text-xs',
+    size === 'icon' && 'size-8 p-0',
     variant === 'primary' &&
-      'border-blue-700 bg-blue-600 text-white shadow-[0_10px_22px_rgba(37,99,235,0.24)] hover:border-blue-600 hover:bg-blue-500',
+      'bg-zinc-950 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white',
     variant === 'secondary' &&
-      'border-white/10 bg-white/10 text-white hover:border-white/15 hover:bg-white/16',
+      'border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white',
     variant === 'ghost' &&
-      'border-slate-200/80 bg-white/72 text-slate-600 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700',
+      'bg-transparent text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white',
     variant === 'danger' &&
-      'border-red-600 bg-red-500 text-white shadow-[0_10px_22px_rgba(239,68,68,0.22)] hover:border-red-500 hover:bg-red-400',
+      'border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 dark:border-red-900/70 dark:bg-red-950/50 dark:text-red-200 dark:hover:bg-red-900/60',
     className,
   );
 

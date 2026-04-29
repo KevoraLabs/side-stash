@@ -1,0 +1,161 @@
+{
+  "extName": {
+    "message": "Side Stash"
+  },
+  "extDescription": {
+    "message": "Speichern Sie ausgewählten Text oder Links in einem persistenten Seitenbereich."
+  },
+  "menuSaveText": {
+    "message": "Text im Seitenbereich speichern"
+  },
+  "menuSaveLink": {
+    "message": "Link im Seitenbereich speichern"
+  },
+  "menuSaveImage": {
+    "message": "Bild im Seitenbereich speichern"
+  },
+  "actionDelete": {
+    "message": "Löschen"
+  },
+  "actionCopy": {
+    "message": "Kopieren"
+  },
+  "confirmDelete": {
+    "message": "Dieses Element löschen?"
+  },
+  "confirmTitle": {
+    "message": "Element löschen"
+  },
+  "confirmCancel": {
+    "message": "Abbrechen"
+  },
+  "panelTitle": {
+    "message": "Side Stash"
+  },
+  "panelSubtitle": {
+    "message": "Text, Links und Bilder schnell speichern"
+  },
+  "panelMode": {
+    "message": "Posteingang"
+  },
+  "languageLabel": {
+    "message": "Sprache"
+  },
+  "languageAuto": {
+    "message": "Auto"
+  },
+  "emptyTitle": {
+    "message": "Noch nichts gespeichert"
+  },
+  "emptyHint": {
+    "message": "Klicken Sie mit der rechten Maustaste auf eine Seite, um Text, Links oder Bilder zu speichern."
+  },
+  "emptyFilteredTitle": {
+    "message": "Keine Treffer gefunden"
+  },
+  "emptyFilteredHint": {
+    "message": "Versuchen Sie ein anderes Stichwort oder wechseln Sie die Filter."
+  },
+  "countLabel": {
+    "message": "Einträge"
+  },
+  "sourceLabel": {
+    "message": "Quelle"
+  },
+  "filterAll": {
+    "message": "Alle"
+  },
+  "filterText": {
+    "message": "Text"
+  },
+  "filterLink": {
+    "message": "Link"
+  },
+  "filterImage": {
+    "message": "Bild"
+  },
+  "filterPlaceholder": {
+    "message": "Nach URL oder Stichwort filtern"
+  },
+  "filterGroupLabel": {
+    "message": "Nach Typ filtern"
+  },
+  "filterClear": {
+    "message": "Löschen"
+  },
+  "searchLabel": {
+    "message": "Gespeicherte Einträge suchen"
+  },
+  "searchTitle": {
+    "message": "Schnellsuche"
+  },
+  "searchHint": {
+    "message": "Inhalt, Titel, Quelle oder URL durchsuchen"
+  },
+  "searchActive": {
+    "message": "Filtern"
+  },
+  "searchKicker": {
+    "message": "Sofort einschränken"
+  },
+  "searchKickerActive": {
+    "message": "Inhalt und Quelle abgleichen"
+  },
+  "selectAll": {
+    "message": "Alle auswählen"
+  },
+  "selectedCount": {
+    "message": "$1 ausgewählt"
+  },
+  "selectionHint": {
+    "message": "Bereit für Stapelaktionen"
+  },
+  "shownCount": {
+    "message": "$1 angezeigt"
+  },
+  "resetFilters": {
+    "message": "Zurücksetzen"
+  },
+  "clearSelection": {
+    "message": "Auswahl aufheben"
+  },
+  "copySelected": {
+    "message": "Kopieren"
+  },
+  "deleteSelected": {
+    "message": "Löschen"
+  },
+  "copySuccess": {
+    "message": "$1 Einträge kopiert."
+  },
+  "copyEmpty": {
+    "message": "Keine Einträge zum Kopieren."
+  },
+  "copyNoneSelected": {
+    "message": "Keine Einträge ausgewählt."
+  },
+  "deleteNoneSelected": {
+    "message": "Keine Einträge ausgewählt."
+  },
+  "confirmDeleteMultiple": {
+    "message": "$1 Einträge löschen?"
+  },
+  "confirmSelectedCount": {
+    "message": "Ausgewählte Einträge: $1"
+  },
+  "copySingleSuccess": {
+    "message": "Kopiert."
+  },
+  "copyFailed": {
+    "message": "Kopieren fehlgeschlagen."
+  },
+  "badgeText": {
+    "message": "TEXT"
+  },
+  "badgeLink": {
+    "message": "LINK"
+  },
+  "badgeImage": {
+    "message": "BILD"
+  }
+}

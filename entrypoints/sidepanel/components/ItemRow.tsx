@@ -1,9 +1,9 @@
 import React from 'react';
-import { Copy, Image as ImageIcon, Link2, Trash2, Type } from 'lucide-react';
+import { Copy, ExternalLink, Image as ImageIcon, Link2, Trash2, Type } from 'lucide-react';
 import { formatTime } from '../lib/format';
 import { cn } from '../lib/cn';
-import { t } from '../lib/i18n';
-import { getSourceDomain } from '../lib/items';
+import { getResolvedLocale, t } from '../lib/i18n';
+import { getOpenUrl, getSourceDomain } from '../lib/items';
 import type { SavedItem } from '../types';
 import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
@@ -13,11 +13,13 @@ type ItemRowProps = {
   selected: boolean;
   onCopy: () => void;
   onDelete: () => void;
+  onOpen: () => void;
   onToggle: (checked: boolean) => void;
 };
 
-export function ItemRow({ item, selected, onCopy, onDelete, onToggle }: ItemRowProps) {
+export function ItemRow({ item, selected, onCopy, onDelete, onOpen, onToggle }: ItemRowProps) {
   const sourceDomain = getSourceDomain(item);
+  const openUrl = getOpenUrl(item);
   const typeLabel =
     item.type === 'link'
       ? t('badgeLink', 'LINK')
@@ -26,84 +28,103 @@ export function ItemRow({ item, selected, onCopy, onDelete, onToggle }: ItemRowP
         : t('badgeText', 'TEXT');
   const badgeClassName =
     item.type === 'link'
-      ? 'border-blue-200/70 bg-blue-50 text-blue-700'
+      ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/40 dark:text-emerald-300'
       : item.type === 'image'
-        ? 'border-sky-200/70 bg-sky-50 text-sky-700'
-        : 'border-slate-200/80 bg-slate-100/80 text-slate-600';
+        ? 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/40 dark:text-amber-300'
+        : 'border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-900/70 dark:bg-sky-950/40 dark:text-sky-300';
 
   return (
     <li
       className={cn(
-        'grid gap-3 rounded-[18px] border p-3.5 shadow-[0_8px_20px_rgba(15,23,42,0.05)] transition',
+        'group grid gap-2 rounded-lg border bg-white p-2.5 transition-[background-color,border-color,box-shadow,transform] hover:-translate-y-px hover:border-zinc-300 hover:bg-zinc-50 hover:shadow-sm dark:bg-zinc-950 dark:hover:border-zinc-700 dark:hover:bg-zinc-900/70',
         selected
-          ? 'border-blue-200 bg-blue-50/70 shadow-[0_16px_30px_rgba(37,99,235,0.12)]'
-          : 'border-slate-200/80 bg-white/88 hover:border-blue-200 hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)]',
+          ? 'border-sky-400 bg-sky-50/70 shadow-[inset_3px_0_0_#0284c7,0_10px_28px_rgba(2,132,199,0.12)] dark:border-sky-700 dark:bg-sky-950/20 dark:shadow-[inset_3px_0_0_#38bdf8]'
+          : 'border-zinc-200 dark:border-zinc-800',
       )}
     >
-      <div className="flex flex-col gap-2 min-[421px]:flex-row min-[421px]:items-center min-[421px]:justify-between">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <Checkbox checked={selected} onCheckedChange={(checked) => onToggle(checked === true)} />
+      <div className="flex flex-col gap-1.5 min-[421px]:flex-row min-[421px]:items-center min-[421px]:justify-between">
+        <div className="flex min-w-0 items-center gap-2">
+          <Checkbox
+            checked={selected}
+            aria-label={selected ? t('deselectItem', 'Deselect item') : t('selectItem', 'Select item')}
+            onCheckedChange={(checked) => onToggle(checked === true)}
+          />
           <span
             className={cn(
-              'inline-flex min-h-6 items-center gap-1.5 rounded-full border px-2.5 text-[10px] font-bold tracking-[0.12em] uppercase',
+              'inline-flex min-h-5 items-center gap-1 rounded-md border px-1.5 text-[10px] font-semibold transition-colors',
               badgeClassName,
             )}
           >
-            {item.type === 'text' ? <Type aria-hidden="true" /> : null}
-            {item.type === 'link' ? <Link2 aria-hidden="true" /> : null}
-            {item.type === 'image' ? <ImageIcon aria-hidden="true" /> : null}
+            {item.type === 'text' ? <Type className="size-2.5" aria-hidden="true" /> : null}
+            {item.type === 'link' ? <Link2 className="size-2.5" aria-hidden="true" /> : null}
+            {item.type === 'image' ? <ImageIcon className="size-2.5" aria-hidden="true" /> : null}
             <span>{typeLabel}</span>
           </span>
         </div>
 
-        <div className="flex shrink-0 items-center justify-between gap-1.5">
-          <time className="mr-1 text-[11px] text-slate-400">{formatTime(item.createdAt)}</time>
+        <div className="flex shrink-0 items-center justify-between gap-1">
+          <time className="mr-1 text-[11px] font-medium text-zinc-400 transition-colors dark:text-zinc-500">{formatTime(item.createdAt, getResolvedLocale())}</time>
+          {openUrl ? (
+            <Button
+              aria-label={t('actionOpen', 'Open')}
+              className="size-7 text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white"
+              size="icon"
+              title={t('actionOpen', 'Open')}
+              type="button"
+              variant="ghost"
+              onClick={onOpen}
+            >
+              <ExternalLink className="size-3.5" aria-hidden="true" />
+            </Button>
+          ) : null}
           <Button
             aria-label={t('actionCopy', 'Copy')}
-            className="text-slate-500 hover:text-blue-700"
+            className="size-7 text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white"
+            title={t('actionCopy', 'Copy')}
             size="icon"
             type="button"
             variant="ghost"
             onClick={onCopy}
           >
-            <Copy aria-hidden="true" />
+            <Copy className="size-3.5" aria-hidden="true" />
           </Button>
           <Button
             aria-label={t('actionDelete', 'Delete')}
-            className="text-slate-500 hover:text-red-600"
+            className="size-7 text-zinc-500 hover:bg-red-50 hover:text-red-700 dark:text-zinc-400 dark:hover:bg-red-950/50 dark:hover:text-red-200"
             size="icon"
+            title={t('actionDelete', 'Delete')}
             type="button"
             variant="ghost"
             onClick={onDelete}
           >
-            <Trash2 aria-hidden="true" />
+            <Trash2 className="size-3.5" aria-hidden="true" />
           </Button>
         </div>
       </div>
 
       <button
         aria-pressed={selected}
-        className="w-full rounded-[14px] border-0 bg-transparent p-0 text-left text-inherit outline-none transition focus-visible:ring-4 focus-visible:ring-blue-500/15"
+        className="w-full cursor-pointer rounded-md border-0 bg-transparent p-1 text-left text-inherit outline-none transition-colors hover:bg-white/65 focus-visible:ring-2 focus-visible:ring-sky-500/25 dark:hover:bg-zinc-950/60"
         type="button"
         onClick={() => onToggle(!selected)}
       >
-        <div className="flex min-w-0 gap-3">
+        <div className="flex min-w-0 gap-2.5">
           {item.type === 'image' && item.imageUrl ? (
             <img
               alt={item.imageAlt || item.content || ''}
-              className="size-[52px] shrink-0 rounded-[14px] border border-slate-200/80 bg-slate-100 object-cover"
+              className="size-12 shrink-0 rounded-md border border-zinc-200 bg-zinc-100 object-cover dark:border-zinc-800 dark:bg-zinc-900"
               loading="lazy"
               src={item.imageUrl}
             />
           ) : null}
 
-          <div className="grid min-w-0 gap-1.5">
-            <p className="line-clamp-2 text-[14px] leading-5 font-medium text-slate-900 break-words">
+          <div className="grid min-w-0 gap-1 content-start">
+            <p className="line-clamp-2 break-words text-[14px] font-medium leading-snug text-zinc-950 transition-colors dark:text-zinc-100">
               {item.content}
             </p>
             {sourceDomain ? (
-              <p className="truncate text-[12px] text-slate-500">
-                {t('sourceLabel', 'Source')}: {sourceDomain}
+              <p className="truncate text-[12px] font-medium text-zinc-500 transition-colors dark:text-zinc-500">
+                {sourceDomain}
               </p>
             ) : null}
           </div>

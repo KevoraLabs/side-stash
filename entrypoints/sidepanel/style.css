@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Avenir Next", "SF Pro Text", "Segoe UI Variable", "Segoe UI", sans-serif;
+  --font-sans: "Avenir Next", "SF Pro Text", "Segoe UI Variable", "Segoe UI", ui-sans-serif, sans-serif;
 }
 
 @layer base {
   :root {
-    color-scheme: light;
+    color-scheme: light dark;
+    --panel-bg: #f4f5f5;
+    --panel-ink: #18181b;
   }
 
   * {
@@ -21,11 +23,22 @@
 
   body {
     margin: 0;
-    color: rgb(51 65 85);
+    color: var(--panel-ink);
     font-family: var(--font-sans);
-    background:
-      radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent 32%),
-      linear-gradient(180deg, #f8fbff 0%, #f2f6fc 100%);
+    background-color: var(--panel-bg);
+    background-image: linear-gradient(#ffffff80 1px, transparent 1px), linear-gradient(90deg, #ffffff80 1px, transparent 1px);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: 24px 24px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      color: #fafafa;
+      background-color: #09090b;
+      background-image: linear-gradient(#18181b 1px, transparent 1px), linear-gradient(90deg, #18181b 1px, transparent 1px);
+    }
   }
 
   button,
@@ -38,5 +51,38 @@
   img {
     display: block;
     max-width: 100%;
+  }
+
+  /* Remove native browser clear button in search inputs */
+  input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    display: none;
+  }
+
+  ::selection {
+    background: #bae6fd;
+    color: #082f49;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #d4d4d8 transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d4d4d8;
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a1a1aa;
+    border: 3px solid transparent;
+    background-clip: content-box;
   }
 }

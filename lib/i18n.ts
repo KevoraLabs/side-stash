@@ -1,9 +1,15 @@
 import { browser } from 'wxt/browser';
+import deMessages from '../public/_locales/de/messages.json';
 import enMessages from '../public/_locales/en/messages.json';
+import esMessages from '../public/_locales/es/messages.json';
+import frMessages from '../public/_locales/fr/messages.json';
 import jaMessages from '../public/_locales/ja/messages.json';
+import koMessages from '../public/_locales/ko/messages.json';
+import ptBrMessages from '../public/_locales/pt_BR/messages.json';
 import zhMessages from '../public/_locales/zh_CN/messages.json';
+import zhTwMessages from '../public/_locales/zh_TW/messages.json';
 
-export type SupportedLocale = 'en' | 'ja' | 'zh_CN';
+export type SupportedLocale = 'en' | 'ja' | 'zh_CN' | 'zh_TW' | 'ko' | 'fr' | 'de' | 'es' | 'pt_BR';
 export type LanguageMode = 'auto' | 'manual';
 export type LanguagePreference = {
   mode: LanguageMode;
@@ -23,6 +29,12 @@ const dictionaries: Record<SupportedLocale, MessageDictionary> = {
   en: enMessages,
   ja: jaMessages,
   zh_CN: zhMessages,
+  zh_TW: zhTwMessages,
+  ko: koMessages,
+  fr: frMessages,
+  de: deMessages,
+  es: esMessages,
+  pt_BR: ptBrMessages,
 };
 
 const listeners = new Set<() => void>();
@@ -43,8 +55,10 @@ function formatMessage(message: string, substitutions?: string | string[]) {
   );
 }
 
+const SUPPORTED_LOCALES = new Set<SupportedLocale>(['en', 'ja', 'zh_CN', 'zh_TW', 'ko', 'fr', 'de', 'es', 'pt_BR']);
+
 function sanitizeLocale(value: unknown): SupportedLocale {
-  return value === 'ja' || value === 'zh_CN' ? value : 'en';
+  return SUPPORTED_LOCALES.has(value as SupportedLocale) ? (value as SupportedLocale) : 'en';
 }
 
 function sanitizePreference(value: unknown): LanguagePreference {
@@ -60,15 +74,26 @@ function sanitizePreference(value: unknown): LanguagePreference {
 }
 
 function normalizeLocale(value?: string | null): SupportedLocale {
-  const normalized = (value || '').toLowerCase().replace('-', '_');
+  const normalized = (value || '').toLowerCase().replace(/-/g, '_');
 
-  if (normalized.startsWith('ja')) {
-    return 'ja';
+  if (normalized.startsWith('ja')) return 'ja';
+  if (normalized.startsWith('ko')) return 'ko';
+  if (normalized.startsWith('fr')) return 'fr';
+  if (normalized.startsWith('de')) return 'de';
+  if (normalized.startsWith('es')) return 'es';
+  if (normalized.startsWith('pt')) return 'pt_BR';
+
+  // zh_TW / zh_HK must be checked before the generic zh → zh_CN fallback
+  if (
+    normalized.startsWith('zh_tw') ||
+    normalized.startsWith('zh_hk') ||
+    normalized.startsWith('zh_mo') ||
+    normalized.startsWith('zh_hant')
+  ) {
+    return 'zh_TW';
   }
 
-  if (normalized.startsWith('zh')) {
-    return 'zh_CN';
-  }
+  if (normalized.startsWith('zh')) return 'zh_CN';
 
   return 'en';
 }
@@ -135,15 +160,18 @@ export function getLanguagePreferenceKey() {
 }
 
 export function getLocaleLabel(locale: SupportedLocale) {
-  if (locale === 'zh_CN') {
-    return '简体中文';
-  }
-
-  if (locale === 'ja') {
-    return '日本語';
-  }
-
-  return 'English';
+  const labels: Record<SupportedLocale, string> = {
+    en: 'English',
+    zh_CN: '简体中文',
+    zh_TW: '繁體中文',
+    ja: '日本語',
+    ko: '한국어',
+    fr: 'Français',
+    de: 'Deutsch',
+    es: 'Español',
+    pt_BR: 'Português',
+  };
+  return labels[locale] ?? 'English';
 }
 
 export function getLanguageSelectValue(): LanguageSelectValue {
