@@ -1,6 +1,6 @@
 {
   "name": "side-stash",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Save selected text or links to a persistent side panel list.",
   "private": true,
   "type": "module",
