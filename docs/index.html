@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Side Stash - Save snippets into a focused side panel</title>
+    <meta
+      name="description"
+      content="Side Stash is a lightweight browser extension for saving text, links, and images into a local side panel."
+    />
+    <meta name="theme-color" content="#111827" />
+    <meta property="og:title" content="Side Stash" />
+    <meta
+      property="og:description"
+      content="Save useful snippets as you browse. Review, filter, copy, and delete them from one focused side panel."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="generated/side-stash-hero.png" />
+    <link rel="icon" href="../public/icon-48.png" />
+    <link rel="stylesheet" href="site.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Side Stash home">
+        <img src="logo.png" width="40" height="40" alt="" />
+        <span>Side Stash</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#workflow">Workflow</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#screens">Screens</a>
+      </nav>
+      <a class="header-link" href="https://github.com/KevoraLabs/side-stash">GitHub</a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <h1 id="hero-title">Stash it. Find it.</h1>
+          <p>
+            Right-click text, links, or images. Side Stash keeps them local,
+            searchable, and ready to copy.
+          </p>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button primary" href="https://github.com/KevoraLabs/side-stash">View on GitHub</a>
+            <a class="button secondary" href="#screens">See screens</a>
+          </div>
+        </div>
+        <figure class="hero-media">
+          <img
+            src="generated/side-stash-hero.png"
+            width="1280"
+            height="800"
+            alt="Generated product mockup showing Side Stash beside a browser page"
+          />
+        </figure>
+      </section>
+
+      <section class="workflow" id="workflow" aria-labelledby="workflow-title">
+        <div class="section-copy narrow">
+          <h2 id="workflow-title">A small capture loop that stays out of the way.</h2>
+          <p>
+            Side Stash is built for the tiny things you do not want to lose while reading,
+            researching, or collecting references.
+          </p>
+        </div>
+        <div class="steps">
+          <article>
+            <span>Capture</span>
+            <h3>Right-click from any page.</h3>
+            <p>Save selected text, a link, or an image without breaking your current tab.</p>
+          </article>
+          <article>
+            <span>Review</span>
+            <h3>Open a clean side panel.</h3>
+            <p>Saved items stay grouped by type with source context and readable previews.</p>
+          </article>
+          <article>
+            <span>Reuse</span>
+            <h3>Search, select, and copy.</h3>
+            <p>Filter your stash, copy a single item, or collect several items at once.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="privacy-band" id="privacy" aria-labelledby="privacy-title">
+        <div>
+          <h2 id="privacy-title">Local by design.</h2>
+          <p>
+            Your saved snippets live in Chrome storage on your device. There is no account,
+            no backend, and no analytics pipeline.
+          </p>
+        </div>
+        <ul aria-label="Privacy details">
+          <li>Stores data with <code>chrome.storage.local</code></li>
+          <li>Uses context menus and the side panel API</li>
+          <li>Does not send saved content to a server</li>
+        </ul>
+      </section>
+
+      <section class="screens" id="screens" aria-labelledby="screens-title">
+        <div class="section-copy">
+          <h2 id="screens-title">Built around real browser habits.</h2>
+          <p>
+            The interface focuses on the few states that matter: capture, search, filter,
+            and bulk actions.
+          </p>
+        </div>
+        <div class="screen-grid">
+          <figure class="wide">
+            <img
+              src="generated/side-stash-search.png"
+              width="1280"
+              height="800"
+              alt="Generated Side Stash mockup showing search across saved snippets"
+            />
+            <figcaption>Search saved content, titles, sources, and URLs.</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="generated/side-stash-filters.png"
+              width="1280"
+              height="800"
+              alt="Generated Side Stash mockup showing type filters in the side panel"
+            />
+            <figcaption>Filter text, links, and images without leaving the panel.</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="generated/side-stash-bulk-actions.png"
+              width="1280"
+              height="800"
+              alt="Generated Side Stash mockup showing selected snippets and bulk actions"
+            />
+            <figcaption>Select several items, then copy or delete them together.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="install" aria-labelledby="install-title">
+        <img src="logo.png" width="96" height="96" alt="" />
+        <div>
+          <h2 id="install-title">Install from source today.</h2>
+          <p>
+            Clone the repository, build the extension, and load the generated Chrome MV3
+            bundle as an unpacked extension.
+          </p>
+        </div>
+        <a class="button primary" href="https://github.com/KevoraLabs/side-stash#development">Open setup</a>
+      </section>
+    </main>
+
+    <footer>
+      <span>Side Stash</span>
+      <a href="https://github.com/KevoraLabs/side-stash">Source on GitHub</a>
+    </footer>
+  </body>
+</html>
