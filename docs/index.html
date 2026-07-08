@@ -21,6 +21,7 @@
     <link rel="icon" sizes="48x48" href="assets/icon-48.png" />
     <link rel="apple-touch-icon" href="assets/icon-128.png" />
     <link rel="stylesheet" href="site.css" />
+    <script src="i18n.js" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -28,25 +29,42 @@
         <img src="assets/icon-128.png" width="40" height="40" alt="" />
         <span>Side Stash</span>
       </a>
-      <nav aria-label="Primary navigation">
-        <a href="#workflow">Workflow</a>
-        <a href="#privacy">Privacy</a>
-        <a href="#screens">Screens</a>
+      <nav aria-label="Primary navigation" data-i18n-attr="aria-label:navLabel">
+        <a href="#workflow" data-i18n="navWorkflow">Workflow</a>
+        <a href="#privacy" data-i18n="navPrivacy">Privacy</a>
+        <a href="#screens" data-i18n="navScreens">Screens</a>
       </nav>
-      <a class="header-link" href="https://chromewebstore.google.com/detail/side-stash/khbkjkjokbmldbaelpknjbfoecdkehbk">Install</a>
+      <div class="header-actions">
+        <label class="language-control">
+          <span data-i18n="languageLabel">Language</span>
+          <select id="language-select" class="language-select" aria-label="Language">
+            <option value="auto" data-i18n="languageAuto">Auto</option>
+            <option value="en">English</option>
+            <option value="zh-CN">简体中文</option>
+            <option value="zh-TW">繁體中文</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="pt-BR">Português</option>
+          </select>
+        </label>
+        <a class="header-link" href="https://chromewebstore.google.com/detail/side-stash/khbkjkjokbmldbaelpknjbfoecdkehbk" data-i18n="install">Install</a>
+      </div>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <h1 id="hero-title">Stash it. Find it.</h1>
-          <p>
+          <h1 id="hero-title" data-i18n="heroTitle">Stash it. Find it.</h1>
+          <p data-i18n="heroBody">
             Right-click text, links, or images. Side Stash keeps them local,
             searchable, and ready to copy.
           </p>
-          <div class="hero-actions" aria-label="Primary actions">
-            <a class="button primary" href="https://chromewebstore.google.com/detail/side-stash/khbkjkjokbmldbaelpknjbfoecdkehbk">Add to Chrome</a>
-            <a class="button secondary" href="#screens">See screens</a>
+          <div class="hero-actions" aria-label="Primary actions" data-i18n-attr="aria-label:primaryActions">
+            <a class="button primary" href="https://chromewebstore.google.com/detail/side-stash/khbkjkjokbmldbaelpknjbfoecdkehbk" data-i18n="addToChrome">Add to Chrome</a>
+            <a class="button secondary" href="#screens" data-i18n="seeScreens">See screens</a>
           </div>
         </div>
         <figure class="hero-media">
@@ -55,56 +73,57 @@
             width="1280"
             height="800"
             alt="Generated product mockup showing Side Stash beside a browser page"
+            data-i18n-attr="alt:heroImageAlt"
           />
         </figure>
       </section>
 
       <section class="workflow" id="workflow" aria-labelledby="workflow-title">
         <div class="section-copy narrow">
-          <h2 id="workflow-title">A small capture loop that stays out of the way.</h2>
-          <p>
+          <h2 id="workflow-title" data-i18n="workflowTitle">A small capture loop that stays out of the way.</h2>
+          <p data-i18n="workflowBody">
             Side Stash is built for the tiny things you do not want to lose while reading,
             researching, or collecting references.
           </p>
         </div>
         <div class="steps">
           <article>
-            <span>Capture</span>
-            <h3>Right-click from any page.</h3>
-            <p>Save selected text, a link, or an image without breaking your current tab.</p>
+            <span data-i18n="stepCaptureLabel">Capture</span>
+            <h3 data-i18n="stepCaptureTitle">Right-click from any page.</h3>
+            <p data-i18n="stepCaptureBody">Save selected text, a link, or an image without breaking your current tab.</p>
           </article>
           <article>
-            <span>Review</span>
-            <h3>Open a clean side panel.</h3>
-            <p>Saved items stay grouped by type with source context and readable previews.</p>
+            <span data-i18n="stepReviewLabel">Review</span>
+            <h3 data-i18n="stepReviewTitle">Open a clean side panel.</h3>
+            <p data-i18n="stepReviewBody">Saved items stay grouped by type with source context and readable previews.</p>
           </article>
           <article>
-            <span>Reuse</span>
-            <h3>Search, select, and copy.</h3>
-            <p>Filter your stash, copy a single item, or collect several items at once.</p>
+            <span data-i18n="stepReuseLabel">Reuse</span>
+            <h3 data-i18n="stepReuseTitle">Search, select, and copy.</h3>
+            <p data-i18n="stepReuseBody">Filter your stash, copy a single item, or collect several items at once.</p>
           </article>
         </div>
       </section>
 
       <section class="privacy-band" id="privacy" aria-labelledby="privacy-title">
         <div>
-          <h2 id="privacy-title">Local by design.</h2>
-          <p>
+          <h2 id="privacy-title" data-i18n="privacyTitle">Local by design.</h2>
+          <p data-i18n="privacyBody">
             Your saved snippets live in Chrome storage on your device. There is no account,
             no backend, and no analytics pipeline.
           </p>
         </div>
-        <ul aria-label="Privacy details">
-          <li>Stores data with <code>chrome.storage.local</code></li>
-          <li>Uses context menus and the side panel API</li>
-          <li>Does not send saved content to a server</li>
+        <ul aria-label="Privacy details" data-i18n-attr="aria-label:privacyDetails">
+          <li data-i18n-html="privacyItemStorage">Stores data with <code>chrome.storage.local</code></li>
+          <li data-i18n="privacyItemMenus">Uses context menus and the side panel API</li>
+          <li data-i18n="privacyItemServer">Does not send saved content to a server</li>
         </ul>
       </section>
 
       <section class="screens" id="screens" aria-labelledby="screens-title">
         <div class="section-copy">
-          <h2 id="screens-title">Built around real browser habits.</h2>
-          <p>
+          <h2 id="screens-title" data-i18n="screensTitle">Built around real browser habits.</h2>
+          <p data-i18n="screensBody">
             The interface focuses on the few states that matter: capture, search, filter,
             and bulk actions.
           </p>
@@ -116,8 +135,9 @@
               width="1280"
               height="800"
               alt="Generated Side Stash mockup showing search across saved snippets"
+              data-i18n-attr="alt:searchImageAlt"
             />
-            <figcaption>Search saved content, titles, sources, and URLs.</figcaption>
+            <figcaption data-i18n="searchCaption">Search saved content, titles, sources, and URLs.</figcaption>
           </figure>
           <figure>
             <img
@@ -125,8 +145,9 @@
               width="1280"
               height="800"
               alt="Generated Side Stash mockup showing type filters in the side panel"
+              data-i18n-attr="alt:filtersImageAlt"
             />
-            <figcaption>Filter text, links, and images without leaving the panel.</figcaption>
+            <figcaption data-i18n="filtersCaption">Filter text, links, and images without leaving the panel.</figcaption>
           </figure>
           <figure>
             <img
@@ -134,8 +155,9 @@
               width="1280"
               height="800"
               alt="Generated Side Stash mockup showing selected snippets and bulk actions"
+              data-i18n-attr="alt:bulkImageAlt"
             />
-            <figcaption>Select several items, then copy or delete them together.</figcaption>
+            <figcaption data-i18n="bulkCaption">Select several items, then copy or delete them together.</figcaption>
           </figure>
         </div>
       </section>
@@ -143,19 +165,19 @@
       <section class="install" aria-labelledby="install-title">
         <img src="assets/icon-128.png" width="96" height="96" alt="" />
         <div>
-          <h2 id="install-title">Install from the Chrome Web Store.</h2>
-          <p>
+          <h2 id="install-title" data-i18n="installTitle">Install from the Chrome Web Store.</h2>
+          <p data-i18n="installBody">
             Add Side Stash to Chrome, pin it if you like, and start saving snippets
             from the right-click menu.
           </p>
         </div>
-        <a class="button primary" href="https://chromewebstore.google.com/detail/side-stash/khbkjkjokbmldbaelpknjbfoecdkehbk">Add to Chrome</a>
+        <a class="button primary" href="https://chromewebstore.google.com/detail/side-stash/khbkjkjokbmldbaelpknjbfoecdkehbk" data-i18n="addToChrome">Add to Chrome</a>
       </section>
     </main>
 
     <footer>
       <span>Side Stash</span>
-      <a href="https://github.com/KevoraLabs/side-stash">Source on GitHub</a>
+      <a href="https://github.com/KevoraLabs/side-stash" data-i18n="sourceOnGitHub">Source on GitHub</a>
     </footer>
   </body>
 </html>
