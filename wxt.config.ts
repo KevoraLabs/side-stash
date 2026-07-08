@@ -13,7 +13,7 @@ export default defineConfig({
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',
     default_locale: 'en',
-    version: '0.1.3',
+    version: '0.1.4',
     permissions: ['contextMenus', 'storage', 'tabs'],
     host_permissions: ['<all_urls>'],
     icons: {
