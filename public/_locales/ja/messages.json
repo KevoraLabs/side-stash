@@ -20,6 +20,12 @@
   "actionCopy": {
     "message": "コピー"
   },
+  "actionCut": {
+    "message": "切り取り"
+  },
+  "actionOpen": {
+    "message": "開く"
+  },
   "confirmDelete": {
     "message": "この項目を削除しますか？"
   },
@@ -74,6 +80,21 @@
   "filterImage": {
     "message": "画像"
   },
+  "dateFilterGroupLabel": {
+    "message": "日付で絞り込み"
+  },
+  "dateToday": {
+    "message": "今日"
+  },
+  "dateYesterday": {
+    "message": "昨日"
+  },
+  "dateWeek": {
+    "message": "7日間"
+  },
+  "dateAll": {
+    "message": "すべて"
+  },
   "filterPlaceholder": {
     "message": "URL またはキーワードで絞り込み"
   },
@@ -122,6 +143,9 @@
   "copySelected": {
     "message": "コピー"
   },
+  "cutSelected": {
+    "message": "切り取り"
+  },
   "deleteSelected": {
     "message": "削除"
   },
@@ -146,8 +170,23 @@
   "copySingleSuccess": {
     "message": "コピーしました。"
   },
+  "cutSuccess": {
+    "message": "$1件を切り取りました。"
+  },
+  "cutSingleSuccess": {
+    "message": "切り取りました。"
+  },
   "copyFailed": {
     "message": "コピーに失敗しました。"
+  },
+  "openUnavailable": {
+    "message": "開けるURLがありません。"
+  },
+  "selectItem": {
+    "message": "項目を選択"
+  },
+  "deselectItem": {
+    "message": "項目の選択を解除"
   },
   "badgeText": {
     "message": "テキスト"

@@ -20,6 +20,12 @@
   "actionCopy": {
     "message": "Copier"
   },
+  "actionCut": {
+    "message": "Couper"
+  },
+  "actionOpen": {
+    "message": "Ouvrir"
+  },
   "confirmDelete": {
     "message": "Supprimer cet élément ?"
   },
@@ -74,6 +80,21 @@
   "filterImage": {
     "message": "Image"
   },
+  "dateFilterGroupLabel": {
+    "message": "Filtrer par date"
+  },
+  "dateToday": {
+    "message": "Aujourd'hui"
+  },
+  "dateYesterday": {
+    "message": "Hier"
+  },
+  "dateWeek": {
+    "message": "7 jours"
+  },
+  "dateAll": {
+    "message": "Tout"
+  },
   "filterPlaceholder": {
     "message": "Filtrer par URL ou mot-clé"
   },
@@ -122,6 +143,9 @@
   "copySelected": {
     "message": "Copier"
   },
+  "cutSelected": {
+    "message": "Couper"
+  },
   "deleteSelected": {
     "message": "Supprimer"
   },
@@ -146,8 +170,23 @@
   "copySingleSuccess": {
     "message": "Copié."
   },
+  "cutSuccess": {
+    "message": "$1 élément(s) coupé(s)."
+  },
+  "cutSingleSuccess": {
+    "message": "Coupé."
+  },
   "copyFailed": {
     "message": "Échec de la copie."
+  },
+  "openUnavailable": {
+    "message": "Aucune URL à ouvrir."
+  },
+  "selectItem": {
+    "message": "Sélectionner l'élément"
+  },
+  "deselectItem": {
+    "message": "Désélectionner l'élément"
   },
   "badgeText": {
     "message": "TEXTE"

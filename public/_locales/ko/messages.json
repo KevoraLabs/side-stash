@@ -20,6 +20,12 @@
   "actionCopy": {
     "message": "복사"
   },
+  "actionCut": {
+    "message": "잘라내기"
+  },
+  "actionOpen": {
+    "message": "열기"
+  },
   "confirmDelete": {
     "message": "이 항목을 삭제하시겠습니까?"
   },
@@ -74,6 +80,21 @@
   "filterImage": {
     "message": "이미지"
   },
+  "dateFilterGroupLabel": {
+    "message": "날짜별 필터링"
+  },
+  "dateToday": {
+    "message": "오늘"
+  },
+  "dateYesterday": {
+    "message": "어제"
+  },
+  "dateWeek": {
+    "message": "7일"
+  },
+  "dateAll": {
+    "message": "전체"
+  },
   "filterPlaceholder": {
     "message": "URL 또는 키워드로 필터링"
   },
@@ -122,6 +143,9 @@
   "copySelected": {
     "message": "복사"
   },
+  "cutSelected": {
+    "message": "잘라내기"
+  },
   "deleteSelected": {
     "message": "삭제"
   },
@@ -146,8 +170,23 @@
   "copySingleSuccess": {
     "message": "복사되었습니다."
   },
+  "cutSuccess": {
+    "message": "$1개를 잘라냈습니다."
+  },
+  "cutSingleSuccess": {
+    "message": "잘라냈습니다."
+  },
   "copyFailed": {
     "message": "복사에 실패했습니다."
+  },
+  "openUnavailable": {
+    "message": "열 URL이 없습니다."
+  },
+  "selectItem": {
+    "message": "항목 선택"
+  },
+  "deselectItem": {
+    "message": "항목 선택 해제"
   },
   "badgeText": {
     "message": "텍스트"

@@ -1,10 +1,9 @@
-import React, { startTransition, useDeferredValue, useEffect, useRef, useState } from 'react';
+import React, { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import { browser } from 'wxt/browser';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { EmptyState } from './components/EmptyState';
 import { FilterBar } from './components/FilterBar';
-import { Header } from './components/Header';
 import { ItemList } from './components/ItemList';
-import { SelectionBar } from './components/SelectionBar';
 import { StatusToast } from './components/StatusToast';
 import { copyTextToClipboard } from './lib/clipboard';
 import {
@@ -30,13 +29,26 @@ export function App() {
   const [activeFilter, setActiveFilter] = useState<ItemFilter>('all');
   const [query, setQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [copyStatus, setCopyStatus] = useState('');
+  const [toast, setToast] = useState<{
+    message: string;
+    type?: 'success' | 'warning' | 'error' | 'info';
+    action?: {
+      label: string;
+      onClick: () => void;
+    };
+  } | null>(null);
   const [deleteState, setDeleteState] = useState<DeleteState>(null);
 
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
-  const filteredItems = getFilteredItems(items, activeFilter, deferredQuery);
-  const selectedItems = items.filter((item) => selectedIds.has(item.id));
-  const selectedCount = selectedIds.size;
+  const filteredItems = useMemo(
+    () => getFilteredItems(items, activeFilter, deferredQuery),
+    [activeFilter, deferredQuery, items],
+  );
+  const selectedItems = useMemo(
+    () => filteredItems.filter((item) => selectedIds.has(item.id)),
+    [filteredItems, selectedIds],
+  );
+  const selectedCount = selectedItems.length;
   const hasActiveFilters = activeFilter !== 'all' || query.trim().length > 0;
   const languageSelectValue = getLanguageSelectValue();
   const resolvedLocale = getResolvedLocale();
@@ -53,6 +65,22 @@ export function App() {
   useEffect(() => {
     document.title = t('panelTitle', 'Side Stash');
   }, [languageSelectValue, resolvedLocale]);
+
+  useEffect(() => {
+    const handleMessage = (message: any) => {
+      if (message && message.type === 'side-stash-toast') {
+        setToast({
+          message: message.message,
+          type: message.toastType || 'warning',
+        });
+      }
+    };
+
+    browser.runtime.onMessage.addListener(handleMessage);
+    return () => {
+      browser.runtime.onMessage.removeListener(handleMessage);
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -76,7 +104,7 @@ export function App() {
 
   useEffect(() => {
     setSelectedIds((previous) => {
-      const availableIds = new Set(items.map((item) => item.id));
+      const availableIds = new Set(filteredItems.map((item) => item.id));
       const nextSelected = new Set<string>();
 
       previous.forEach((id) => {
@@ -87,19 +115,26 @@ export function App() {
 
       return nextSelected;
     });
-  }, [items]);
+  }, [filteredItems]);
 
   useEffect(() => {
-    if (!copyStatus) {
+    if (!toast) {
       return undefined;
     }
 
+    // Warnings and errors stay longer (5s) for better readability, successes stay 2s (or 4s if they have an Undo action)
+    const duration = toast.action
+      ? 4000
+      : toast.type === 'warning' || toast.type === 'error'
+        ? 5000
+        : 2000;
+
     const timeout = window.setTimeout(() => {
-      setCopyStatus((current) => (current === copyStatus ? '' : current));
-    }, 2000);
+      setToast(null);
+    }, duration);
 
     return () => window.clearTimeout(timeout);
-  }, [copyStatus]);
+  }, [toast]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -132,6 +167,11 @@ export function App() {
       if (event.key === 'Enter' && selectedIds.size > 0 && !isTypingTarget && deleteState === null) {
         event.preventDefault();
         void handleCopySelected();
+      }
+
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'x' && selectedItems.length > 0 && !isTypingTarget && deleteState === null) {
+        event.preventDefault();
+        void handleCutSelected();
       }
 
       if ((event.key === 'Delete' || event.key === 'Backspace') && selectedItems.length > 0 && !isTypingTarget && deleteState === null) {
@@ -174,32 +214,160 @@ export function App() {
     });
   };
 
+  const handleUndoItems = async (itemsToRestore: SavedItem[], indicesToRestore: number[]) => {
+    const currentItems = await getItems();
+    const nextItems = [...currentItems];
+
+    const pairs = itemsToRestore.map((item, i) => ({
+      item,
+      index: indicesToRestore[i],
+    }));
+
+    pairs.sort((a, b) => a.index - b.index);
+
+    pairs.forEach(({ item, index }) => {
+      const targetIndex = Math.min(Math.max(0, index), nextItems.length);
+      nextItems.splice(targetIndex, 0, item);
+    });
+
+    await saveItems(nextItems);
+    setToast(null);
+  };
+
+  const handleDeleteSingle = async (item: SavedItem) => {
+    const idsToDelete = [item.id];
+    const index = items.findIndex((i) => i.id === item.id);
+    const indices = index !== -1 ? [index] : [];
+
+    await removeItems(idsToDelete);
+
+    setSelectedIds((previous) => {
+      const nextSelected = new Set(previous);
+      nextSelected.delete(item.id);
+      return nextSelected;
+    });
+
+    setToast({
+      message: t('deleteSuccess', 'Item deleted.'),
+      type: 'success',
+      action: {
+        label: t('actionUndo', 'Undo'),
+        onClick: () => {
+          void handleUndoItems([item], indices);
+        },
+      },
+    });
+  };
+
   const handleCopyItems = async (targetItems: SavedItem[], successMessage: string) => {
     if (!targetItems.length) {
-      setCopyStatus(t('copyNoneSelected', 'No items selected.'));
+      setToast({
+        message: t('copyNoneSelected', 'No items selected.'),
+        type: 'warning',
+      });
       return;
     }
 
     const lines = targetItems.map(getCopyValue).filter(Boolean);
+    if (!lines.length) {
+      setToast({
+        message: t('copyEmpty', 'No items to copy.'),
+        type: 'warning',
+      });
+      return;
+    }
+
     const success = await copyTextToClipboard(lines.join('\n'));
-    setCopyStatus(success ? successMessage : t('copyFailed', 'Copy failed.'));
+    setToast({
+      message: success ? successMessage : t('copyFailed', 'Copy failed.'),
+      type: success ? 'success' : 'error',
+    });
+  };
+
+  const handleCutItems = async (targetItems: SavedItem[], successMessage: string) => {
+    if (!targetItems.length) {
+      setToast({
+        message: t('copyNoneSelected', 'No items selected.'),
+        type: 'warning',
+      });
+      return;
+    }
+
+    const lines = targetItems.map(getCopyValue).filter(Boolean);
+    if (!lines.length) {
+      setToast({
+        message: t('copyEmpty', 'No items to copy.'),
+        type: 'warning',
+      });
+      return;
+    }
+
+    const success = await copyTextToClipboard(lines.join('\n'));
+    if (!success) {
+      setToast({
+        message: t('copyFailed', 'Copy failed.'),
+        type: 'error',
+      });
+      return;
+    }
+
+    const idsToDelete = targetItems.map((item) => item.id);
+    const deletedItems: SavedItem[] = [];
+    const deletedIndices: number[] = [];
+    items.forEach((item, index) => {
+      if (idsToDelete.includes(item.id)) {
+        deletedItems.push(item);
+        deletedIndices.push(index);
+      }
+    });
+
+    await removeItems(idsToDelete);
+    setSelectedIds((previous) => {
+      const nextSelected = new Set(previous);
+      idsToDelete.forEach((id) => nextSelected.delete(id));
+      return nextSelected;
+    });
+
+    setToast({
+      message: successMessage,
+      type: 'success',
+      action: {
+        label: t('actionUndo', 'Undo'),
+        onClick: () => {
+          void handleUndoItems(deletedItems, deletedIndices);
+        },
+      },
+    });
   };
 
   const handleCopySingle = async (item: SavedItem) => {
     const text = getCopyValue(item);
     if (!text) {
-      setCopyStatus(t('copyFailed', 'Copy failed.'));
+      setToast({
+        message: t('copyFailed', 'Copy failed.'),
+        type: 'error',
+      });
       return;
     }
 
     const success = await copyTextToClipboard(text);
-    setCopyStatus(success ? t('copySingleSuccess', 'Copied.') : t('copyFailed', 'Copy failed.'));
+    setToast({
+      message: success ? t('copySingleSuccess', 'Copied.') : t('copyFailed', 'Copy failed.'),
+      type: success ? 'success' : 'error',
+    });
+  };
+
+  const handleCutSingle = async (item: SavedItem) => {
+    await handleCutItems([item], t('cutSingleSuccess', 'Cut.'));
   };
 
   const handleOpenItem = (item: SavedItem) => {
     const url = getOpenUrl(item);
     if (!url) {
-      setCopyStatus(t('openUnavailable', 'No URL to open.'));
+      setToast({
+        message: t('openUnavailable', 'No URL to open.'),
+        type: 'warning',
+      });
       return;
     }
 
@@ -213,18 +381,24 @@ export function App() {
     );
   };
 
+  const handleCutSelected = async () => {
+    await handleCutItems(
+      selectedItems,
+      t('cutSuccess', `Cut ${selectedItems.length} items.`, [String(selectedItems.length)]),
+    );
+  };
+
   const openDeleteDialog = (targetItems: SavedItem[]) => {
     if (!targetItems.length) {
-      setCopyStatus(t('deleteNoneSelected', 'No items selected.'));
+      setToast({
+        message: t('deleteNoneSelected', 'No items selected.'),
+        type: 'warning',
+      });
       return;
     }
 
     if (targetItems.length === 1) {
-      setDeleteState({
-        ids: [targetItems[0].id],
-        itemLabel: targetItems[0].content,
-        message: t('confirmDelete', 'Delete this item?'),
-      });
+      void handleDeleteSingle(targetItems[0]);
       return;
     }
 
@@ -242,6 +416,15 @@ export function App() {
     }
 
     const idsToDelete = [...deleteState.ids];
+    const deletedItems: SavedItem[] = [];
+    const deletedIndices: number[] = [];
+    items.forEach((item, index) => {
+      if (idsToDelete.includes(item.id)) {
+        deletedItems.push(item);
+        deletedIndices.push(index);
+      }
+    });
+
     await removeItems(idsToDelete);
 
     setSelectedIds((previous) => {
@@ -251,6 +434,19 @@ export function App() {
     });
 
     setDeleteState(null);
+
+    setToast({
+      message: idsToDelete.length === 1
+        ? t('deleteSuccess', 'Item deleted.')
+        : t('deleteMultipleSuccess', `Deleted ${idsToDelete.length} items.`, [String(idsToDelete.length)]),
+      type: 'success',
+      action: {
+        label: t('actionUndo', 'Undo'),
+        onClick: () => {
+          void handleUndoItems(deletedItems, deletedIndices);
+        },
+      },
+    });
   };
 
   const handleResetFilters = () => {
@@ -260,22 +456,12 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-transparent px-3 py-3 text-zinc-950 transition-colors dark:text-zinc-50">
-      <div className="mx-auto flex min-h-[calc(100vh-1.5rem)] max-w-[460px] flex-col pb-24">
-        <Header
-          languageSelectValue={languageSelectValue}
-          resolvedLocaleLabel={getLocaleLabel(resolvedLocale)}
-          totalCount={items.length}
-          onLanguageChange={(value) => {
-            void setLanguagePreference(value);
-          }}
-        />
-
+      <div className="mx-auto flex min-h-[calc(100vh-1.5rem)] max-w-[460px] flex-col">
         <div className="mb-3">
           <FilterBar
             activeFilter={activeFilter}
             allFilteredSelected={allFilteredSelected}
             filteredCount={filteredItems.length}
-            hasActiveFilters={hasActiveFilters}
             hasFilteredItems={filteredItems.length > 0}
             hasPartialSelection={someFilteredSelected}
             query={query}
@@ -284,8 +470,15 @@ export function App() {
             onClearQuery={() => setQuery('')}
             onFilterChange={setActiveFilter}
             onQueryChange={setQuery}
-            onResetFilters={handleResetFilters}
             onToggleSelectAll={handleToggleSelectAll}
+            onCopy={handleCopySelected}
+            onCut={handleCutSelected}
+            onDelete={() => openDeleteDialog(selectedItems)}
+            languageSelectValue={languageSelectValue}
+            resolvedLocaleLabel={getLocaleLabel(resolvedLocale)}
+            onLanguageChange={(value) => {
+              void setLanguagePreference(value);
+            }}
           />
         </div>
 
@@ -301,7 +494,8 @@ export function App() {
               items={filteredItems}
               selectedIds={selectedIds}
               onCopyItem={handleCopySingle}
-              onDeleteItem={(item) => openDeleteDialog([item])}
+              onCutItem={handleCutSingle}
+              onDeleteItem={handleDeleteSingle}
               onOpenItem={handleOpenItem}
               onToggleItem={handleToggleItem}
             />
@@ -309,15 +503,7 @@ export function App() {
         </main>
       </div>
 
-      <SelectionBar
-        selectedCount={selectedCount}
-        visible={selectedCount > 0}
-        onClear={() => setSelectedIds(new Set())}
-        onCopy={handleCopySelected}
-        onDelete={() => openDeleteDialog(selectedItems)}
-      />
-
-      <StatusToast message={copyStatus} raised={selectedCount > 0} />
+      <StatusToast message={toast?.message ?? ''} type={toast?.type} action={toast?.action} raised={false} />
 
       <ConfirmDialog
         description={deleteState?.message ?? t('confirmDelete', 'Delete this item?')}

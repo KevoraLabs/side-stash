@@ -20,6 +20,12 @@
   "actionCopy": {
     "message": "Copiar"
   },
+  "actionCut": {
+    "message": "Recortar"
+  },
+  "actionOpen": {
+    "message": "Abrir"
+  },
   "confirmDelete": {
     "message": "Excluir este item?"
   },
@@ -74,6 +80,21 @@
   "filterImage": {
     "message": "Imagem"
   },
+  "dateFilterGroupLabel": {
+    "message": "Filtrar por data"
+  },
+  "dateToday": {
+    "message": "Hoje"
+  },
+  "dateYesterday": {
+    "message": "Ontem"
+  },
+  "dateWeek": {
+    "message": "7 dias"
+  },
+  "dateAll": {
+    "message": "Todos"
+  },
   "filterPlaceholder": {
     "message": "Filtrar por URL ou palavra-chave"
   },
@@ -122,6 +143,9 @@
   "copySelected": {
     "message": "Copiar"
   },
+  "cutSelected": {
+    "message": "Recortar"
+  },
   "deleteSelected": {
     "message": "Excluir"
   },
@@ -146,8 +170,23 @@
   "copySingleSuccess": {
     "message": "Copiado."
   },
+  "cutSuccess": {
+    "message": "$1 item(s) recortado(s)."
+  },
+  "cutSingleSuccess": {
+    "message": "Recortado."
+  },
   "copyFailed": {
     "message": "Falha ao copiar."
+  },
+  "openUnavailable": {
+    "message": "Nenhuma URL para abrir."
+  },
+  "selectItem": {
+    "message": "Selecionar item"
+  },
+  "deselectItem": {
+    "message": "Desmarcar item"
   },
   "badgeText": {
     "message": "TEXTO"

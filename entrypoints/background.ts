@@ -136,7 +136,7 @@ const getImageLabel = (imageUrl: string, imageAlt: string) => {
   return imageUrl;
 };
 
-const addItem = async (item: Record<string, unknown>) => {
+const addItem = async (item: Record<string, unknown>): Promise<'success' | 'duplicate'> => {
   const stored = await browser.storage.local.get(STORAGE_KEY);
   const items = Array.isArray(stored[STORAGE_KEY]) ? stored[STORAGE_KEY] : [];
   const nextKey = buildDedupKey(item);
@@ -145,14 +145,23 @@ const addItem = async (item: Record<string, unknown>) => {
       return buildDedupKey(storedItem) === nextKey;
     });
     if (exists) {
-      return;
+      return 'duplicate';
     }
   }
   items.unshift(item);
   await browser.storage.local.set({ [STORAGE_KEY]: items });
+  return 'success';
 };
 
 export default defineBackground(() => {
+  if (import.meta.env.DEV) {
+    void browser.tabs.query({ url: '*://www.141jav.com/*' }).then((tabs) => {
+      if (tabs.length === 0) {
+        void browser.tabs.create({ url: 'https://www.141jav.com/' });
+      }
+    });
+  }
+
   browser.runtime.onInstalled.addListener(() => {
     void initializeI18n().then(() => refreshMenus());
     setPanelBehavior();
@@ -180,65 +189,65 @@ export default defineBackground(() => {
     const pageTitle = contextData?.pageTitle || '';
     const pageUrl = info.pageUrl || tab?.url || '';
     const createdAt = new Date().toISOString();
+    let newItem: Record<string, unknown> | null = null;
 
     if (info.menuItemId === MENU_TEXT_ID) {
       const selectedText = (info.selectionText || '').trim();
-      if (!selectedText) {
-        return;
+      if (selectedText) {
+        newItem = {
+          id: buildId(),
+          type: 'text',
+          content: selectedText,
+          pageTitle,
+          pageUrl,
+          createdAt,
+        };
       }
-
-      await addItem({
-        id: buildId(),
-        type: 'text',
-        content: selectedText,
-        pageTitle,
-        pageUrl,
-        createdAt,
-      });
-
-      return;
-    }
-
-    if (info.menuItemId === MENU_LINK_ID) {
+    } else if (info.menuItemId === MENU_LINK_ID) {
       const linkUrl = info.linkUrl || contextData?.linkUrl || '';
-      if (!linkUrl) {
-        return;
+      if (linkUrl) {
+        const linkText =
+          (contextData?.linkText || '').trim() || info.selectionText || linkUrl;
+        newItem = {
+          id: buildId(),
+          type: 'link',
+          content: linkText,
+          linkUrl,
+          pageTitle,
+          pageUrl,
+          createdAt,
+        };
       }
-
-      const linkText =
-        (contextData?.linkText || '').trim() || info.selectionText || linkUrl;
-
-      await addItem({
-        id: buildId(),
-        type: 'link',
-        content: linkText,
-        linkUrl,
-        pageTitle,
-        pageUrl,
-        createdAt,
-      });
-
-      return;
+    } else if (info.menuItemId === MENU_IMAGE_ID) {
+      const imageUrl = info.srcUrl || contextData?.imageUrl || '';
+      if (imageUrl) {
+        const imageAlt = (contextData?.imageAlt || '').trim();
+        newItem = {
+          id: buildId(),
+          type: 'image',
+          content: getImageLabel(imageUrl, imageAlt),
+          imageUrl,
+          imageAlt,
+          pageTitle,
+          pageUrl,
+          createdAt,
+        };
+      }
     }
 
-    if (info.menuItemId === MENU_IMAGE_ID) {
-      const imageUrl = info.srcUrl || contextData?.imageUrl || '';
-      if (!imageUrl) {
-        return;
+    if (newItem) {
+      const result = await addItem(newItem);
+      if (result === 'duplicate') {
+        try {
+          await browser.runtime.sendMessage({
+            type: 'side-stash-toast',
+            toastType: 'warning',
+            message: t('duplicateNotice', 'Item already saved.'),
+          });
+        } catch {
+          // ignore error when side panel is closed
+        }
       }
-
-      const imageAlt = (contextData?.imageAlt || '').trim();
-
-      await addItem({
-        id: buildId(),
-        type: 'image',
-        content: getImageLabel(imageUrl, imageAlt),
-        imageUrl,
-        imageAlt,
-        pageTitle,
-        pageUrl,
-        createdAt,
-      });
     }
   });
 });

@@ -20,6 +20,12 @@
   "actionCopy": {
     "message": "複製"
   },
+  "actionCut": {
+    "message": "剪下"
+  },
+  "actionOpen": {
+    "message": "開啟"
+  },
   "confirmDelete": {
     "message": "確定刪除此項目？"
   },
@@ -74,6 +80,21 @@
   "filterImage": {
     "message": "圖片"
   },
+  "dateFilterGroupLabel": {
+    "message": "依時間篩選"
+  },
+  "dateToday": {
+    "message": "今天"
+  },
+  "dateYesterday": {
+    "message": "昨天"
+  },
+  "dateWeek": {
+    "message": "近 7 天"
+  },
+  "dateAll": {
+    "message": "全部"
+  },
   "filterPlaceholder": {
     "message": "依網址或關鍵字篩選"
   },
@@ -122,6 +143,9 @@
   "copySelected": {
     "message": "複製"
   },
+  "cutSelected": {
+    "message": "剪下"
+  },
   "deleteSelected": {
     "message": "刪除"
   },
@@ -146,8 +170,23 @@
   "copySingleSuccess": {
     "message": "已複製。"
   },
+  "cutSuccess": {
+    "message": "已剪下 $1 筆。"
+  },
+  "cutSingleSuccess": {
+    "message": "已剪下。"
+  },
   "copyFailed": {
     "message": "複製失敗。"
+  },
+  "openUnavailable": {
+    "message": "沒有可開啟的網址。"
+  },
+  "selectItem": {
+    "message": "選取項目"
+  },
+  "deselectItem": {
+    "message": "取消選取項目"
   },
   "badgeText": {
     "message": "文字"
@@ -157,5 +196,26 @@
   },
   "badgeImage": {
     "message": "圖片"
+  },
+  "actionUndo": {
+    "message": "復原"
+  },
+  "deleteSuccess": {
+    "message": "已刪除條目。"
+  },
+  "deleteMultipleSuccess": {
+    "message": "已刪除 $1 條。"
+  },
+  "duplicateNotice": {
+    "message": "該內容已儲存過。"
+  },
+  "toastWarningTitle": {
+    "message": "警告"
+  },
+  "toastErrorTitle": {
+    "message": "錯誤"
+  },
+  "toastConfirm": {
+    "message": "知道了"
   }
 }

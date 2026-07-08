@@ -20,6 +20,9 @@
   "actionCopy": {
     "message": "复制"
   },
+  "actionCut": {
+    "message": "剪切"
+  },
   "actionOpen": {
     "message": "打开"
   },
@@ -77,6 +80,21 @@
   "filterImage": {
     "message": "图片"
   },
+  "dateFilterGroupLabel": {
+    "message": "按时间筛选"
+  },
+  "dateToday": {
+    "message": "今天"
+  },
+  "dateYesterday": {
+    "message": "昨天"
+  },
+  "dateWeek": {
+    "message": "近 7 天"
+  },
+  "dateAll": {
+    "message": "全部"
+  },
   "filterPlaceholder": {
     "message": "按网址或关键词筛选"
   },
@@ -125,6 +143,9 @@
   "copySelected": {
     "message": "复制"
   },
+  "cutSelected": {
+    "message": "剪切"
+  },
   "deleteSelected": {
     "message": "删除"
   },
@@ -149,6 +170,12 @@
   "copySingleSuccess": {
     "message": "已复制。"
   },
+  "cutSuccess": {
+    "message": "已剪切 $1 条。"
+  },
+  "cutSingleSuccess": {
+    "message": "已剪切。"
+  },
   "copyFailed": {
     "message": "复制失败。"
   },
@@ -169,5 +196,26 @@
   },
   "badgeImage": {
     "message": "图片"
+  },
+  "actionUndo": {
+    "message": "撤销"
+  },
+  "deleteSuccess": {
+    "message": "已删除条目。"
+  },
+  "deleteMultipleSuccess": {
+    "message": "已删除 $1 条。"
+  },
+  "duplicateNotice": {
+    "message": "该内容已保存过。"
+  },
+  "toastWarningTitle": {
+    "message": "警告"
+  },
+  "toastErrorTitle": {
+    "message": "错误"
+  },
+  "toastConfirm": {
+    "message": "知道了"
   }
 }

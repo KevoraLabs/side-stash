@@ -40,7 +40,11 @@ export function getSourceDomain(item: SavedItem) {
   return getHostname(item.pageUrl) || getHostname(item.linkUrl) || getHostname(item.imageUrl);
 }
 
-export function getFilteredItems(items: SavedItem[], activeFilter: ItemFilter, queryText: string) {
+export function getFilteredItems(
+  items: SavedItem[],
+  activeFilter: ItemFilter,
+  queryText: string,
+) {
   return items.filter((item) => {
     if (activeFilter !== 'all' && item.type !== activeFilter) {
       return false;

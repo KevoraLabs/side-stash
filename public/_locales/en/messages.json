@@ -20,6 +20,9 @@
   "actionCopy": {
     "message": "Copy"
   },
+  "actionCut": {
+    "message": "Cut"
+  },
   "actionOpen": {
     "message": "Open"
   },
@@ -77,6 +80,21 @@
   "filterImage": {
     "message": "Image"
   },
+  "dateFilterGroupLabel": {
+    "message": "Filter by date"
+  },
+  "dateToday": {
+    "message": "Today"
+  },
+  "dateYesterday": {
+    "message": "Yesterday"
+  },
+  "dateWeek": {
+    "message": "7 days"
+  },
+  "dateAll": {
+    "message": "All"
+  },
   "filterPlaceholder": {
     "message": "Filter by URL or keyword"
   },
@@ -125,6 +143,9 @@
   "copySelected": {
     "message": "Copy"
   },
+  "cutSelected": {
+    "message": "Cut"
+  },
   "deleteSelected": {
     "message": "Delete"
   },
@@ -149,6 +170,12 @@
   "copySingleSuccess": {
     "message": "Copied."
   },
+  "cutSuccess": {
+    "message": "Cut $1 items."
+  },
+  "cutSingleSuccess": {
+    "message": "Cut."
+  },
   "copyFailed": {
     "message": "Copy failed."
   },
@@ -169,5 +196,26 @@
   },
   "badgeImage": {
     "message": "IMAGE"
+  },
+  "actionUndo": {
+    "message": "Undo"
+  },
+  "deleteSuccess": {
+    "message": "Item deleted."
+  },
+  "deleteMultipleSuccess": {
+    "message": "Deleted $1 items."
+  },
+  "duplicateNotice": {
+    "message": "Item already saved."
+  },
+  "toastWarningTitle": {
+    "message": "Warning"
+  },
+  "toastErrorTitle": {
+    "message": "Error"
+  },
+  "toastConfirm": {
+    "message": "Got it"
   }
 }
