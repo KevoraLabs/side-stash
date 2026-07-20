@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { t } from '../lib/i18n';
+import React from 'react';
+import { t } from '../../../lib/i18n';
 import type { SavedItem } from '../types';
 import { ItemRow } from './ItemRow';
 
@@ -24,18 +24,8 @@ export function ItemList({
   onToggleItem,
   onTogglePin,
 }: ItemListProps) {
-  const { pinned, rest } = useMemo(() => {
-    const pinnedItems: SavedItem[] = [];
-    const restItems: SavedItem[] = [];
-    items.forEach((item) => {
-      if (item.pinned) {
-        pinnedItems.push(item);
-      } else {
-        restItems.push(item);
-      }
-    });
-    return { pinned: pinnedItems, rest: restItems };
-  }, [items]);
+  const pinned = items.filter((item) => item.pinned);
+  const rest = items.filter((item) => !item.pinned);
 
   const renderItems = (list: SavedItem[]) =>
     list.map((item) => (

@@ -2,7 +2,7 @@ import React from 'react';
 import { Copy, ExternalLink, Image as ImageIcon, Link2, Pin, Scissors, Trash2, Type } from 'lucide-react';
 import { formatTime } from '../lib/format';
 import { cn } from '../lib/cn';
-import { getResolvedLocale, t } from '../lib/i18n';
+import { getResolvedLocale, t } from '../../../lib/i18n';
 import { getOpenUrl, getSourceDomain } from '../lib/items';
 import type { SavedItem } from '../types';
 import { Button } from './ui/button';

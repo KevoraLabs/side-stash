@@ -13,7 +13,7 @@ import {
   setLanguagePreference,
   subscribeToLanguageChange,
   t,
-} from './lib/i18n';
+} from '../../lib/i18n';
 import {
   getCopyValue,
   getDomainOptions,

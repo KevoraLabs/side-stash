@@ -2,11 +2,10 @@ import React from 'react';
 import type { RefObject } from 'react';
 import { ChevronDown, Copy, FileText, Image as ImageIcon, Link2, ListFilter, Scissors, Search, Trash2, X } from 'lucide-react';
 import { cn } from '../lib/cn';
-import { t } from '../lib/i18n';
-import type { LanguageSelectValue } from '../lib/i18n';
+import { t } from '../../../lib/i18n';
+import type { LanguageSelectValue } from '../../../lib/i18n';
 import type { CopyFormat, DateFilter, ItemFilter } from '../types';
 import { Checkbox } from './ui/checkbox';
-import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { SettingsSheet } from './SettingsSheet';
 
@@ -87,10 +86,10 @@ export function FilterBar({
             className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-zinc-400"
             aria-hidden="true"
           />
-          <Input
+          <input
             ref={searchInputRef}
             aria-label={t('searchLabel', 'Search saved items')}
-            className="h-9 border-zinc-200/90 bg-white pl-8 pr-9 text-[13px] dark:border-zinc-800"
+            className="h-9 w-full min-w-0 rounded-lg border border-zinc-200/90 bg-white px-3 py-2.5 pl-8 pr-9 text-[13px] text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/20 disabled:pointer-events-none disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600"
             placeholder={t('filterPlaceholder', 'Search snippets...')}
             type="search"
             value={query}

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { ChevronDown, Download, Languages, Settings, Upload } from 'lucide-react';
-import { t } from '../lib/i18n';
-import type { LanguageSelectValue } from '../lib/i18n';
+import { t } from '../../../lib/i18n';
+import type { LanguageSelectValue } from '../../../lib/i18n';
 import type { CopyFormat } from '../types';
 import { Button } from './ui/button';
 import {

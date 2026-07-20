@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image as ImageIcon, Link2, MousePointerClick, PanelRight, SearchX, Type } from 'lucide-react';
-import { t } from '../lib/i18n';
+import { t } from '../../../lib/i18n';
 import { Button } from './ui/button';
 
 type EmptyStateProps = {

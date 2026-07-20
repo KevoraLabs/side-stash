@@ -1,5 +1,5 @@
 import React from 'react';
-import { t } from '../lib/i18n';
+import { t } from '../../../lib/i18n';
 import { Button } from './ui/button';
 import {
   Dialog,
