@@ -14,9 +14,28 @@ import {
   subscribeToLanguageChange,
   t,
 } from './lib/i18n';
-import { getCopyValue, getFilteredItems, getOpenUrl } from './lib/items';
-import { getItems, removeItems, subscribeToItems } from './lib/storage';
-import type { ItemFilter, SavedItem } from './types';
+import {
+  getCopyValue,
+  getDomainOptions,
+  getFilteredItems,
+  getOpenUrl,
+  itemsToJson,
+  itemsToMarkdown,
+  parseImportPayload,
+} from './lib/items';
+import {
+  getItems,
+  getPanelPreferences,
+  mergeImportedItems,
+  removeItems,
+  saveItems,
+  setPanelPreferences,
+  subscribeToItems,
+  subscribeToPreferences,
+  updateItem,
+} from './lib/storage';
+import { downloadTextFile, readTextFile } from './lib/transfer';
+import type { CopyFormat, DateFilter, ItemFilter, SavedItem } from './types';
 
 type DeleteState =
   | { ids: string[]; itemLabel: string; message: string }
@@ -27,8 +46,11 @@ export function App() {
   const [, setLanguageVersion] = useState(0);
   const [items, setItems] = useState<SavedItem[]>([]);
   const [activeFilter, setActiveFilter] = useState<ItemFilter>('all');
+  const [dateFilter, setDateFilter] = useState<DateFilter>('all');
+  const [domainFilter, setDomainFilter] = useState('');
   const [query, setQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [copyFormat, setCopyFormat] = useState<CopyFormat>('plain');
   const [toast, setToast] = useState<{
     message: string;
     type?: 'success' | 'warning' | 'error' | 'info';
@@ -41,15 +63,20 @@ export function App() {
 
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
   const filteredItems = useMemo(
-    () => getFilteredItems(items, activeFilter, deferredQuery),
-    [activeFilter, deferredQuery, items],
+    () => getFilteredItems(items, activeFilter, deferredQuery, dateFilter, domainFilter),
+    [activeFilter, dateFilter, deferredQuery, domainFilter, items],
   );
+  const domainOptions = useMemo(() => getDomainOptions(items), [items]);
   const selectedItems = useMemo(
     () => filteredItems.filter((item) => selectedIds.has(item.id)),
     [filteredItems, selectedIds],
   );
   const selectedCount = selectedItems.length;
-  const hasActiveFilters = activeFilter !== 'all' || query.trim().length > 0;
+  const hasActiveFilters =
+    activeFilter !== 'all' ||
+    dateFilter !== 'all' ||
+    domainFilter.length > 0 ||
+    query.trim().length > 0;
   const languageSelectValue = getLanguageSelectValue();
   const resolvedLocale = getResolvedLocale();
   const allFilteredSelected =
@@ -103,6 +130,26 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    let active = true;
+
+    void getPanelPreferences().then((prefs) => {
+      if (!active) {
+        return;
+      }
+      setCopyFormat(prefs.copyFormat);
+    });
+
+    const unsubscribe = subscribeToPreferences((prefs) => {
+      setCopyFormat(prefs.copyFormat);
+    });
+
+    return () => {
+      active = false;
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     setSelectedIds((previous) => {
       const availableIds = new Set(filteredItems.map((item) => item.id));
       const nextSelected = new Set<string>();
@@ -118,16 +165,21 @@ export function App() {
   }, [filteredItems]);
 
   useEffect(() => {
+    if (domainFilter && !domainOptions.some((option) => option.domain === domainFilter)) {
+      setDomainFilter('');
+    }
+  }, [domainFilter, domainOptions]);
+
+  useEffect(() => {
     if (!toast) {
       return undefined;
     }
 
-    // Warnings and errors stay longer (5s) for better readability, successes stay 2s (or 4s if they have an Undo action)
     const duration = toast.action
-      ? 4000
+      ? 4500
       : toast.type === 'warning' || toast.type === 'error'
-        ? 5000
-        : 2000;
+        ? 4200
+        : 2200;
 
     const timeout = window.setTimeout(() => {
       setToast(null);
@@ -135,54 +187,6 @@ export function App() {
 
     return () => window.clearTimeout(timeout);
   }, [toast]);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      const isTypingTarget =
-        target instanceof HTMLInputElement ||
-        target instanceof HTMLTextAreaElement ||
-        target?.isContentEditable;
-
-      if (event.key === 'Escape' && selectedIds.size > 0 && deleteState === null) {
-        setSelectedIds(new Set());
-        return;
-      }
-
-      if (event.key === '/' && !isTypingTarget && deleteState === null) {
-        event.preventDefault();
-        searchInputRef.current?.focus();
-        return;
-      }
-
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'a' && !isTypingTarget) {
-        if (!filteredItems.length) {
-          return;
-        }
-
-        event.preventDefault();
-        setSelectedIds(new Set(filteredItems.map((item) => item.id)));
-      }
-
-      if (event.key === 'Enter' && selectedIds.size > 0 && !isTypingTarget && deleteState === null) {
-        event.preventDefault();
-        void handleCopySelected();
-      }
-
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'x' && selectedItems.length > 0 && !isTypingTarget && deleteState === null) {
-        event.preventDefault();
-        void handleCutSelected();
-      }
-
-      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedItems.length > 0 && !isTypingTarget && deleteState === null) {
-        event.preventDefault();
-        openDeleteDialog(selectedItems);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [deleteState, filteredItems, selectedIds.size, selectedItems]);
 
   const handleToggleItem = (id: string, checked: boolean) => {
     setSelectedIds((previous) => {
@@ -235,11 +239,10 @@ export function App() {
   };
 
   const handleDeleteSingle = async (item: SavedItem) => {
-    const idsToDelete = [item.id];
     const index = items.findIndex((i) => i.id === item.id);
     const indices = index !== -1 ? [index] : [];
 
-    await removeItems(idsToDelete);
+    await removeItems([item.id]);
 
     setSelectedIds((previous) => {
       const nextSelected = new Set(previous);
@@ -268,7 +271,7 @@ export function App() {
       return;
     }
 
-    const lines = targetItems.map(getCopyValue).filter(Boolean);
+    const lines = targetItems.map((item) => getCopyValue(item, copyFormat)).filter(Boolean);
     if (!lines.length) {
       setToast({
         message: t('copyEmpty', 'No items to copy.'),
@@ -293,7 +296,7 @@ export function App() {
       return;
     }
 
-    const lines = targetItems.map(getCopyValue).filter(Boolean);
+    const lines = targetItems.map((item) => getCopyValue(item, copyFormat)).filter(Boolean);
     if (!lines.length) {
       setToast({
         message: t('copyEmpty', 'No items to copy.'),
@@ -341,7 +344,7 @@ export function App() {
   };
 
   const handleCopySingle = async (item: SavedItem) => {
-    const text = getCopyValue(item);
+    const text = getCopyValue(item, copyFormat);
     if (!text) {
       setToast({
         message: t('copyFailed', 'Copy failed.'),
@@ -372,6 +375,16 @@ export function App() {
     }
 
     window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleTogglePin = async (item: SavedItem) => {
+    await updateItem(item.id, { pinned: !item.pinned });
+    setToast({
+      message: item.pinned
+        ? t('unpinSuccess', 'Unpinned.')
+        : t('pinSuccess', 'Pinned.'),
+      type: 'success',
+    });
   };
 
   const handleCopySelected = async () => {
@@ -451,15 +464,117 @@ export function App() {
 
   const handleResetFilters = () => {
     setActiveFilter('all');
+    setDateFilter('all');
+    setDomainFilter('');
     setQuery('');
   };
 
+  const handleCopyFormatChange = (format: CopyFormat) => {
+    setCopyFormat(format);
+    void setPanelPreferences({ copyFormat: format });
+  };
+
+  const handleExportJson = () => {
+    const stamp = new Date().toISOString().slice(0, 10);
+    downloadTextFile(`side-stash-${stamp}.json`, itemsToJson(items), 'application/json');
+    setToast({
+      message: t('exportSuccess', 'Exported.'),
+      type: 'success',
+    });
+  };
+
+  const handleExportMarkdown = () => {
+    const stamp = new Date().toISOString().slice(0, 10);
+    downloadTextFile(`side-stash-${stamp}.md`, itemsToMarkdown(items), 'text/markdown');
+    setToast({
+      message: t('exportSuccess', 'Exported.'),
+      type: 'success',
+    });
+  };
+
+  const handleImportFile = async (file: File) => {
+    try {
+      const raw = await readTextFile(file);
+      const incoming = parseImportPayload(raw);
+      if (!incoming.length) {
+        setToast({
+          message: t('importEmpty', 'No valid items in file.'),
+          type: 'warning',
+        });
+        return;
+      }
+
+      const result = await mergeImportedItems(incoming);
+      setToast({
+        message: t('importSuccess', 'Imported $1 items.', [String(result.added)]),
+        type: 'success',
+      });
+    } catch {
+      setToast({
+        message: t('importFailed', 'Import failed. Use a Side Stash JSON export.'),
+        type: 'error',
+      });
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTypingTarget =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        target?.isContentEditable;
+
+      if (event.key === 'Escape' && selectedIds.size > 0 && deleteState === null) {
+        setSelectedIds(new Set());
+        return;
+      }
+
+      if (event.key === '/' && !isTypingTarget && deleteState === null) {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+        return;
+      }
+
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'a' && !isTypingTarget) {
+        if (!filteredItems.length) {
+          return;
+        }
+
+        event.preventDefault();
+        setSelectedIds(new Set(filteredItems.map((item) => item.id)));
+      }
+
+      if (event.key === 'Enter' && selectedIds.size > 0 && !isTypingTarget && deleteState === null) {
+        event.preventDefault();
+        void handleCopySelected();
+      }
+
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'x' && selectedItems.length > 0 && !isTypingTarget && deleteState === null) {
+        event.preventDefault();
+        void handleCutSelected();
+      }
+
+      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedItems.length > 0 && !isTypingTarget && deleteState === null) {
+        event.preventDefault();
+        openDeleteDialog(selectedItems);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [copyFormat, deleteState, filteredItems, selectedIds.size, selectedItems]);
+
   return (
-    <div className="min-h-screen bg-transparent px-3 py-3 text-zinc-950 transition-colors dark:text-zinc-50">
-      <div className="mx-auto flex min-h-[calc(100vh-1.5rem)] max-w-[460px] flex-col">
-        <div className="mb-3">
+    <div className="flex h-full min-h-0 flex-col bg-transparent text-zinc-950 dark:text-zinc-50">
+      <div className="mx-auto flex h-full min-h-0 w-full max-w-[460px] flex-col px-3 py-3">
+        <div className="shrink-0">
           <FilterBar
             activeFilter={activeFilter}
+            dateFilter={dateFilter}
+            domainFilter={domainFilter}
+            domainOptions={domainOptions}
             allFilteredSelected={allFilteredSelected}
             filteredCount={filteredItems.length}
             hasFilteredItems={filteredItems.length > 0}
@@ -467,22 +582,31 @@ export function App() {
             query={query}
             searchInputRef={searchInputRef}
             selectedCount={selectedCount}
+            copyFormat={copyFormat}
+            languageSelectValue={languageSelectValue}
+            resolvedLocaleLabel={getLocaleLabel(resolvedLocale)}
             onClearQuery={() => setQuery('')}
             onFilterChange={setActiveFilter}
+            onDateFilterChange={setDateFilter}
+            onDomainFilterChange={setDomainFilter}
             onQueryChange={setQuery}
             onToggleSelectAll={handleToggleSelectAll}
             onCopy={handleCopySelected}
             onCut={handleCutSelected}
             onDelete={() => openDeleteDialog(selectedItems)}
-            languageSelectValue={languageSelectValue}
-            resolvedLocaleLabel={getLocaleLabel(resolvedLocale)}
             onLanguageChange={(value) => {
               void setLanguagePreference(value);
+            }}
+            onCopyFormatChange={handleCopyFormatChange}
+            onExportJson={handleExportJson}
+            onExportMarkdown={handleExportMarkdown}
+            onImportFile={(file) => {
+              void handleImportFile(file);
             }}
           />
         </div>
 
-        <main className="min-h-0 flex-1 overflow-hidden rounded-lg border border-zinc-200 bg-white px-2 py-2 shadow-sm transition-colors dark:border-zinc-800 dark:bg-zinc-950">
+        <main className="mt-2.5 min-h-0 flex-1 overflow-y-auto pb-14">
           {filteredItems.length === 0 ? (
             <EmptyState
               hasActiveFilters={hasActiveFilters}
@@ -498,12 +622,15 @@ export function App() {
               onDeleteItem={handleDeleteSingle}
               onOpenItem={handleOpenItem}
               onToggleItem={handleToggleItem}
+              onTogglePin={(item) => {
+                void handleTogglePin(item);
+              }}
             />
           )}
         </main>
       </div>
 
-      <StatusToast message={toast?.message ?? ''} type={toast?.type} action={toast?.action} raised={false} />
+      <StatusToast message={toast?.message ?? ''} type={toast?.type} action={toast?.action} />
 
       <ConfirmDialog
         description={deleteState?.message ?? t('confirmDelete', 'Delete this item?')}

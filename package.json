@@ -1,7 +1,7 @@
 {
   "name": "side-stash",
-  "version": "0.1.4",
-  "description": "Save selected text or links to a persistent side panel list.",
+  "version": "0.1.5",
+  "description": "Save text, links, and images to a private side panel. Search, filter, and copy — all stored locally.",
   "private": true,
   "type": "module",
   "scripts": {

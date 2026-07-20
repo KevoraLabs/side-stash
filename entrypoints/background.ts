@@ -9,6 +9,8 @@ const MENU_TEXT_ID = 'side-stash-save-text';
 const MENU_LINK_ID = 'side-stash-save-link';
 const MENU_IMAGE_ID = 'side-stash-save-image';
 const STORAGE_KEY = 'items';
+const SAVE_SELECTION_COMMAND = 'save-selection';
+const BADGE_CLEAR_MS = 2200;
 
 type ContextData = {
   pageTitle: string;
@@ -16,7 +18,10 @@ type ContextData = {
   linkUrl: string;
   imageAlt: string;
   imageUrl: string;
+  selectionText?: string;
 };
+
+type FeedbackKind = 'success' | 'duplicate' | 'empty';
 
 const createMenus = () => {
   browser.contextMenus.create({
@@ -153,18 +158,100 @@ const addItem = async (item: Record<string, unknown>): Promise<'success' | 'dupl
   return 'success';
 };
 
-export default defineBackground(() => {
-  if (import.meta.env.DEV) {
-    void browser.tabs.query({ url: '*://www.141jav.com/*' }).then((tabs) => {
-      if (tabs.length === 0) {
-        void browser.tabs.create({ url: 'https://www.141jav.com/' });
-      }
+const clearBadgeSoon = () => {
+  setTimeout(() => {
+    void browser.action.setBadgeText({ text: '' });
+  }, BADGE_CLEAR_MS);
+};
+
+const flashBadge = async (kind: FeedbackKind) => {
+  try {
+    const color =
+      kind === 'success' ? '#059669' : kind === 'duplicate' ? '#d97706' : '#71717a';
+    await browser.action.setBadgeBackgroundColor({ color });
+    await browser.action.setBadgeText({
+      text: kind === 'success' ? 'OK' : kind === 'duplicate' ? '!' : '·',
     });
+    clearBadgeSoon();
+  } catch {
+    // ignore when action API is unavailable
+  }
+};
+
+const notifySaveFeedback = async (kind: FeedbackKind, tabId?: number) => {
+  const message =
+    kind === 'success'
+      ? t('saveSuccess', 'Saved to Side Stash.')
+      : kind === 'duplicate'
+        ? t('duplicateNotice', 'Item already saved.')
+        : t('saveEmptySelection', 'Select text first, then press the shortcut.');
+  const toastType =
+    kind === 'success' ? 'success' : kind === 'duplicate' ? 'warning' : 'info';
+
+  void flashBadge(kind);
+
+  try {
+    await browser.runtime.sendMessage({
+      type: 'side-stash-toast',
+      toastType,
+      message,
+    });
+  } catch {
+    // side panel may be closed
   }
 
-  browser.runtime.onInstalled.addListener(() => {
+  if (typeof tabId === 'number') {
+    try {
+      await browser.tabs.sendMessage(tabId, {
+        type: 'side-stash-page-toast',
+        toastType,
+        message,
+      });
+    } catch {
+      // content script may be unavailable on restricted pages
+    }
+  }
+};
+
+const openWelcomePage = async () => {
+  try {
+    await browser.tabs.create({
+      url: browser.runtime.getURL('/welcome.html'),
+    });
+  } catch {
+    // ignore
+  }
+};
+
+const saveSelectionFromTab = async (tab?: browser.Tabs.Tab) => {
+  const tabId = tab?.id;
+  const contextData = await getContextData(tabId);
+  const selectedText = (contextData?.selectionText || '').trim();
+  if (!selectedText) {
+    await notifySaveFeedback('empty', tabId);
+    return;
+  }
+
+  const result = await addItem({
+    id: buildId(),
+    type: 'text',
+    content: selectedText,
+    pageTitle: contextData?.pageTitle || tab?.title || '',
+    pageUrl: tab?.url || '',
+    createdAt: new Date().toISOString(),
+    pinned: false,
+  });
+  await notifySaveFeedback(result, tabId);
+};
+
+export default defineBackground(() => {
+  browser.runtime.onInstalled.addListener((details) => {
     void initializeI18n().then(() => refreshMenus());
     setPanelBehavior();
+
+    if (details.reason === 'install') {
+      void openWelcomePage();
+    }
   });
 
   browser.runtime.onStartup.addListener(() => {
@@ -183,6 +270,56 @@ export default defineBackground(() => {
   void initializeI18n().then(() => refreshMenus());
   setPanelBehavior();
 
+  browser.runtime.onMessage.addListener((message, sender) => {
+    if (message?.type !== 'side-stash-open-panel') {
+      return undefined;
+    }
+
+    const sidePanel = (
+      browser as typeof browser & {
+        sidePanel?: {
+          open?: (options: { windowId?: number; tabId?: number }) => Promise<void>;
+        };
+      }
+    ).sidePanel;
+
+    void (async () => {
+      try {
+        if (!sidePanel?.open) {
+          return;
+        }
+
+        if (typeof sender.tab?.windowId === 'number') {
+          await sidePanel.open({ windowId: sender.tab.windowId });
+          return;
+        }
+
+        if (typeof sender.tab?.id === 'number') {
+          await sidePanel.open({ tabId: sender.tab.id });
+          return;
+        }
+
+        const currentWindow = await browser.windows.getCurrent();
+        if (typeof currentWindow.id === 'number') {
+          await sidePanel.open({ windowId: currentWindow.id });
+        }
+      } catch {
+        // ignore
+      }
+    })();
+
+    return true;
+  });
+
+  browser.commands?.onCommand.addListener((command) => {
+    if (command !== SAVE_SELECTION_COMMAND) {
+      return;
+    }
+
+    void browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+      void saveSelectionFromTab(tabs[0]);
+    });
+  });
 
   browser.contextMenus.onClicked.addListener(async (info, tab) => {
     const contextData = await getContextData(tab?.id);
@@ -201,6 +338,7 @@ export default defineBackground(() => {
           pageTitle,
           pageUrl,
           createdAt,
+          pinned: false,
         };
       }
     } else if (info.menuItemId === MENU_LINK_ID) {
@@ -216,6 +354,7 @@ export default defineBackground(() => {
           pageTitle,
           pageUrl,
           createdAt,
+          pinned: false,
         };
       }
     } else if (info.menuItemId === MENU_IMAGE_ID) {
@@ -231,23 +370,14 @@ export default defineBackground(() => {
           pageTitle,
           pageUrl,
           createdAt,
+          pinned: false,
         };
       }
     }
 
     if (newItem) {
       const result = await addItem(newItem);
-      if (result === 'duplicate') {
-        try {
-          await browser.runtime.sendMessage({
-            type: 'side-stash-toast',
-            toastType: 'warning',
-            message: t('duplicateNotice', 'Item already saved.'),
-          });
-        } catch {
-          // ignore error when side panel is closed
-        }
-      }
+      await notifySaveFeedback(result, tab?.id);
     }
   });
 });

@@ -8,13 +8,38 @@ export function formatTime(iso?: string, locale?: string) {
     return '';
   }
 
-  const resolvedLocale = locale || navigator.language;
+  const resolvedLocale = (locale || navigator.language).replace('_', '-');
+  const now = Date.now();
+  const diffMs = now - date.getTime();
+  const diffMinutes = Math.round(diffMs / 60000);
 
-  return date.toLocaleString(resolvedLocale.replace('_', '-'), {
-    year: 'numeric',
+  if (diffMinutes < 1) {
+    return new Intl.RelativeTimeFormat(resolvedLocale, { numeric: 'auto' }).format(0, 'minute');
+  }
+  if (diffMinutes < 60) {
+    return new Intl.RelativeTimeFormat(resolvedLocale, { numeric: 'auto' }).format(
+      -diffMinutes,
+      'minute',
+    );
+  }
+
+  const diffHours = Math.round(diffMinutes / 60);
+  if (diffHours < 24) {
+    return new Intl.RelativeTimeFormat(resolvedLocale, { numeric: 'auto' }).format(
+      -diffHours,
+      'hour',
+    );
+  }
+
+  const diffDays = Math.round(diffHours / 24);
+  if (diffDays < 7) {
+    return new Intl.RelativeTimeFormat(resolvedLocale, { numeric: 'auto' }).format(-diffDays, 'day');
+  }
+
+  const sameYear = date.getFullYear() === new Date().getFullYear();
+  return date.toLocaleDateString(resolvedLocale, {
     month: 'short',
     day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+    ...(sameYear ? {} : { year: 'numeric' }),
   });
 }

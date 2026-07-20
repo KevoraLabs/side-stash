@@ -1,19 +1,49 @@
+import { cpSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'wxt';
+
+/** Keep Chrome `_locales` in public/ in sync with importable `locales/`. */
+function syncLocalesToPublic() {
+  const sourceRoot = join(process.cwd(), 'locales');
+  const targetRoot = join(process.cwd(), 'public', '_locales');
+
+  if (!existsSync(sourceRoot)) {
+    return;
+  }
+
+  if (existsSync(targetRoot)) {
+    rmSync(targetRoot, { recursive: true, force: true });
+  }
+  mkdirSync(targetRoot, { recursive: true });
+
+  for (const locale of readdirSync(sourceRoot)) {
+    const from = join(sourceRoot, locale);
+    const to = join(targetRoot, locale);
+    cpSync(from, to, { recursive: true });
+  }
+}
+
+syncLocalesToPublic();
 
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   vite: () => ({
     plugins: [tailwindcss()],
-    server: {
-      hmr: false,
-    },
   }),
+  webExt: {
+    startUrls: ['https://www.wikipedia.org/'],
+  },
+  hooks: {
+    'build:before': () => {
+      syncLocalesToPublic();
+    },
+  },
   manifest: {
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',
     default_locale: 'en',
-    version: '0.1.4',
+    version: '0.1.5',
     permissions: ['contextMenus', 'storage', 'tabs'],
     host_permissions: ['<all_urls>'],
     icons: {
@@ -31,6 +61,15 @@ export default defineConfig({
         32: '/icon-32.png',
         48: '/icon-48.png',
         128: '/icon-128.png',
+      },
+    },
+    commands: {
+      'save-selection': {
+        suggested_key: {
+          default: 'Alt+S',
+          mac: 'Alt+S',
+        },
+        description: '__MSG_commandSaveSelection__',
       },
     },
   },

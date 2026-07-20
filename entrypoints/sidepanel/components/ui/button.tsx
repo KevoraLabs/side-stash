@@ -21,7 +21,7 @@ export function Button({
 }: ButtonProps) {
   const Comp = asChild ? Slot : 'button';
   const classes = cn(
-    'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-sky-500/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-950 [&_svg]:size-4 active:translate-y-px',
+    'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-zinc-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-950 [&_svg]:size-4 active:scale-[0.98]',
     size === 'default' && 'h-10 px-4',
     size === 'sm' && 'h-8 px-3 text-xs',
     size === 'icon' && 'size-8 p-0',

@@ -1,6 +1,6 @@
 # Side Stash
 
-Side Stash is a lightweight browser side‑panel collector. Right‑click any webpage to save text, links, or images, then review, filter, copy, and delete items from a clean side panel UI. All data stays on your device.
+Side Stash is a lightweight browser side‑panel collector. Right‑click any webpage to save text, links, or images, then review, filter, copy, and delete items from a clean side panel UI. All data stays on your device — no account, no upload, no tracking.
 
 ---
 
@@ -13,19 +13,22 @@ Side Stash is a lightweight browser side‑panel collector. Right‑click any we
 ## Features
 
 - Right‑click save: text, links, images
+- Keyboard shortcut: `Alt+S` saves the current selection
 - Side panel list with local persistence
-- Quick filters by type and keyword/URL
-- Multi‑select copy (newline separated) and bulk delete
-- Single‑item copy and delete
-- Source display (domain only)
+- Filters by type, date, site, and keyword/URL
+- Pin important items
+- Copy formats: plain, Markdown, with source
+- Multi‑select copy / cut / delete
+- Export / import JSON; export Markdown
+- Source display (domain)
 
 ---
 
 ## How It Works
 
-1. Select text or right‑click a link/image
-2. Choose “Save to side panel”
-3. Open the side panel to view, filter, copy, or delete
+1. Select text (or press `Alt+S`), or right‑click a link/image
+2. Choose “Save to side panel” when using the menu
+3. Open the side panel to view, filter, pin, copy, or export
 
 ---
 

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { t } from '../lib/i18n';
 import type { SavedItem } from '../types';
 import { ItemRow } from './ItemRow';
 
@@ -10,6 +11,7 @@ type ItemListProps = {
   onDeleteItem: (item: SavedItem) => void;
   onOpenItem: (item: SavedItem) => void;
   onToggleItem: (id: string, checked: boolean) => void;
+  onTogglePin: (item: SavedItem) => void;
 };
 
 export function ItemList({
@@ -20,24 +22,57 @@ export function ItemList({
   onDeleteItem,
   onOpenItem,
   onToggleItem,
+  onTogglePin,
 }: ItemListProps) {
+  const { pinned, rest } = useMemo(() => {
+    const pinnedItems: SavedItem[] = [];
+    const restItems: SavedItem[] = [];
+    items.forEach((item) => {
+      if (item.pinned) {
+        pinnedItems.push(item);
+      } else {
+        restItems.push(item);
+      }
+    });
+    return { pinned: pinnedItems, rest: restItems };
+  }, [items]);
+
+  const renderItems = (list: SavedItem[]) =>
+    list.map((item) => (
+      <ItemRow
+        key={item.id}
+        item={item}
+        selected={selectedIds.has(item.id)}
+        onCopy={() => onCopyItem(item)}
+        onCut={() => onCutItem(item)}
+        onDelete={() => onDeleteItem(item)}
+        onOpen={() => onOpenItem(item)}
+        onToggle={(checked) => onToggleItem(item.id, checked)}
+        onTogglePin={() => onTogglePin(item)}
+      />
+    ));
+
   return (
-    <ul
-      className="m-0 grid h-full list-none content-start gap-1.5 overflow-y-auto px-1 py-1 pr-2 pb-1"
-      aria-live="polite"
-    >
-      {items.map((item) => (
-        <ItemRow
-          key={item.id}
-          item={item}
-          selected={selectedIds.has(item.id)}
-          onCopy={() => onCopyItem(item)}
-          onCut={() => onCutItem(item)}
-          onDelete={() => onDeleteItem(item)}
-          onOpen={() => onOpenItem(item)}
-          onToggle={(checked) => onToggleItem(item.id, checked)}
-        />
-      ))}
-    </ul>
+    <div className="grid gap-3" aria-live="polite">
+      {pinned.length > 0 ? (
+        <section className="grid gap-2">
+          <h2 className="m-0 px-0.5 text-[11px] font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+            {t('sectionPinned', 'Pinned')}
+          </h2>
+          <ul className="m-0 grid list-none content-start gap-2 p-0">{renderItems(pinned)}</ul>
+        </section>
+      ) : null}
+
+      {rest.length > 0 ? (
+        <section className="grid gap-2">
+          {pinned.length > 0 ? (
+            <h2 className="m-0 px-0.5 text-[11px] font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+              {t('sectionRecent', 'Recent')}
+            </h2>
+          ) : null}
+          <ul className="m-0 grid list-none content-start gap-2 p-0">{renderItems(rest)}</ul>
+        </section>
+      ) : null}
+    </div>
   );
 }

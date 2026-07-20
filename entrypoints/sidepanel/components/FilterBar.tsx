@@ -1,15 +1,25 @@
 import React from 'react';
 import type { RefObject } from 'react';
-import { ChevronDown, Copy, FileText, Globe, Image as ImageIcon, Link2, ListFilter, Scissors, Search, Trash2, X } from 'lucide-react';
+import { ChevronDown, Copy, FileText, Image as ImageIcon, Link2, ListFilter, Scissors, Search, Trash2, X } from 'lucide-react';
 import { cn } from '../lib/cn';
 import { t } from '../lib/i18n';
-import type { ItemFilter } from '../types';
+import type { LanguageSelectValue } from '../lib/i18n';
+import type { CopyFormat, DateFilter, ItemFilter } from '../types';
 import { Checkbox } from './ui/checkbox';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
+import { SettingsSheet } from './SettingsSheet';
+
+type DomainOption = {
+  domain: string;
+  count: number;
+};
 
 type FilterBarProps = {
   activeFilter: ItemFilter;
+  dateFilter: DateFilter;
+  domainFilter: string;
+  domainOptions: DomainOption[];
   allFilteredSelected: boolean;
   filteredCount: number;
   hasFilteredItems: boolean;
@@ -17,23 +27,33 @@ type FilterBarProps = {
   query: string;
   searchInputRef: RefObject<HTMLInputElement | null>;
   selectedCount: number;
+  copyFormat: CopyFormat;
+  languageSelectValue: LanguageSelectValue;
+  resolvedLocaleLabel: string;
   onClearQuery: () => void;
   onFilterChange: (filter: ItemFilter) => void;
+  onDateFilterChange: (filter: DateFilter) => void;
+  onDomainFilterChange: (domain: string) => void;
   onQueryChange: (value: string) => void;
   onToggleSelectAll: (checked: boolean) => void;
   onCopy: () => void;
   onCut: () => void;
   onDelete: () => void;
-  // Language Selector Props
-  languageSelectValue: string;
-  resolvedLocaleLabel: string;
-  onLanguageChange: (value: any) => void;
+  onLanguageChange: (value: LanguageSelectValue) => void;
+  onCopyFormatChange: (format: CopyFormat) => void;
+  onExportJson: () => void;
+  onExportMarkdown: () => void;
+  onImportFile: (file: File) => void;
 };
 
 const FILTERS: ItemFilter[] = ['all', 'text', 'link', 'image'];
+const DATE_FILTERS: DateFilter[] = ['all', 'today', 'yesterday', 'week'];
 
 export function FilterBar({
   activeFilter,
+  dateFilter,
+  domainFilter,
+  domainOptions,
   allFilteredSelected,
   filteredCount,
   hasFilteredItems,
@@ -41,26 +61,36 @@ export function FilterBar({
   query,
   searchInputRef,
   selectedCount,
+  copyFormat,
+  languageSelectValue,
+  resolvedLocaleLabel,
   onClearQuery,
   onFilterChange,
+  onDateFilterChange,
+  onDomainFilterChange,
   onQueryChange,
   onToggleSelectAll,
   onCopy,
   onCut,
   onDelete,
-  languageSelectValue,
-  resolvedLocaleLabel,
   onLanguageChange,
+  onCopyFormatChange,
+  onExportJson,
+  onExportMarkdown,
+  onImportFile,
 }: FilterBarProps) {
   return (
-    <section className="mb-0 grid gap-3">
+    <section className="grid gap-2">
       <div className="flex items-center gap-2">
-        <label className="relative block flex-1">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400 transition-colors" aria-hidden="true" />
+        <label className="relative block min-w-0 flex-1">
+          <Search
+            className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-zinc-400"
+            aria-hidden="true"
+          />
           <Input
             ref={searchInputRef}
             aria-label={t('searchLabel', 'Search saved items')}
-            className="h-10 pl-9 pr-10"
+            className="h-9 border-zinc-200/90 bg-white pl-8 pr-9 text-[13px] dark:border-zinc-800"
             placeholder={t('filterPlaceholder', 'Search snippets...')}
             type="search"
             value={query}
@@ -69,7 +99,7 @@ export function FilterBar({
           {query ? (
             <Button
               aria-label={t('filterClear', 'Clear')}
-              className="absolute top-1/2 right-1 -translate-y-1/2 size-8"
+              className="absolute top-1/2 right-1 -translate-y-1/2 size-7"
               size="icon"
               type="button"
               variant="ghost"
@@ -80,34 +110,21 @@ export function FilterBar({
           ) : null}
         </label>
 
-        <label className="relative block shrink-0" title={resolvedLocaleLabel}>
-          <Globe className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-zinc-400 transition-colors" aria-hidden="true" />
-          <select
-            aria-label={t('languageLabel', 'Language')}
-            className="h-10 w-[96px] appearance-none rounded-lg border border-zinc-200 bg-white pr-6 pl-7 text-left text-xs font-medium text-zinc-700 outline-none transition-colors hover:bg-zinc-50 focus:ring-2 focus:ring-sky-500/25 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:bg-zinc-900"
-            value={languageSelectValue}
-            onChange={(event) => onLanguageChange(event.target.value)}
-          >
-            <option value="auto">{t('languageAuto', 'Auto')}</option>
-            <option value="en">English</option>
-            <option value="zh_CN">简体中文</option>
-            <option value="zh_TW">繁體中文</option>
-            <option value="ja">日本語</option>
-            <option value="ko">한국어</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="es">Español</option>
-            <option value="pt_BR">Português</option>
-          </select>
-          <ChevronDown className="pointer-events-none absolute top-1/2 right-2 size-3.5 -translate-y-1/2 text-zinc-400 transition-colors" aria-hidden="true" />
-        </label>
+        <SettingsSheet
+          copyFormat={copyFormat}
+          languageSelectValue={languageSelectValue}
+          resolvedLocaleLabel={resolvedLocaleLabel}
+          onCopyFormatChange={onCopyFormatChange}
+          onExportJson={onExportJson}
+          onExportMarkdown={onExportMarkdown}
+          onImportFile={onImportFile}
+          onLanguageChange={onLanguageChange}
+        />
       </div>
-
-
 
       <div
         aria-label={t('filterGroupLabel', 'Filter by type')}
-        className="grid grid-cols-4 rounded-lg border border-zinc-200 bg-zinc-100 p-1 dark:border-zinc-800 dark:bg-zinc-900"
+        className="grid grid-cols-4 gap-0.5 rounded-lg border border-zinc-200/90 bg-zinc-100/80 p-0.5 dark:border-zinc-800 dark:bg-zinc-900/80"
         role="group"
       >
         {FILTERS.map((filter) => {
@@ -133,42 +150,114 @@ export function FilterBar({
               key={filter}
               aria-pressed={activeFilter === filter}
               className={cn(
-                'inline-flex h-7 min-w-0 items-center justify-center gap-1 rounded-md px-1.5 text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30',
+                'inline-flex h-7 min-w-0 items-center justify-center gap-1 rounded-md px-1 text-[11px] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/40',
                 activeFilter === filter
-                  ? 'bg-white text-zinc-950 shadow-sm dark:bg-zinc-950 dark:text-zinc-50'
-                  : 'text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-100',
+                  ? 'bg-white text-zinc-900 shadow-[0_1px_0_rgba(0,0,0,0.04)] dark:bg-zinc-950 dark:text-zinc-50'
+                  : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100',
               )}
               type="button"
               onClick={() => onFilterChange(filter)}
             >
-              <Icon className="size-3.5 shrink-0" aria-hidden="true" />
+              <Icon className="size-3 shrink-0" aria-hidden="true" />
               <span className="truncate">{label}</span>
             </button>
           );
         })}
       </div>
 
-      <div className="flex h-9 items-center justify-between gap-3 rounded-lg border border-zinc-200 bg-white px-2.5 py-0 text-xs text-zinc-500 transition-colors dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+      <div className="grid grid-cols-[1fr_auto] gap-2">
+        <div
+          aria-label={t('dateFilterGroupLabel', 'Filter by date')}
+          className="grid grid-cols-4 gap-0.5 rounded-lg border border-zinc-200/90 bg-white p-0.5 dark:border-zinc-800 dark:bg-zinc-950"
+          role="group"
+        >
+          {DATE_FILTERS.map((filter) => {
+            const label =
+              filter === 'all'
+                ? t('dateAll', 'All')
+                : filter === 'today'
+                  ? t('dateToday', 'Today')
+                  : filter === 'yesterday'
+                    ? t('dateYesterday', 'Yesterday')
+                    : t('dateWeek', '7 days');
+
+            return (
+              <button
+                key={filter}
+                aria-pressed={dateFilter === filter}
+                className={cn(
+                  'inline-flex h-7 min-w-0 items-center justify-center rounded-md px-1 text-[11px] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/40',
+                  dateFilter === filter
+                    ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+                    : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100',
+                )}
+                type="button"
+                onClick={() => onDateFilterChange(filter)}
+              >
+                <span className="truncate">{label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <label className="relative min-w-0">
+          <span className="sr-only">{t('domainFilterLabel', 'Filter by site')}</span>
+          <select
+            aria-label={t('domainFilterLabel', 'Filter by site')}
+            className="h-8 w-[124px] appearance-none rounded-lg border border-zinc-200/90 bg-white py-0 pr-7 pl-2 text-[11px] font-medium text-zinc-700 outline-none focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200"
+            value={domainFilter}
+            onChange={(event) => onDomainFilterChange(event.target.value)}
+          >
+            <option value="">{t('domainFilterAll', 'All sites')}</option>
+            {domainOptions.map((option) => (
+              <option key={option.domain} value={option.domain}>
+                {option.domain} ({option.count})
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 right-2 size-3 -translate-y-1/2 text-zinc-400"
+          />
+        </label>
+      </div>
+
+      <div
+        className={cn(
+          'flex min-h-9 items-center justify-between gap-2 rounded-lg border px-2.5 py-1.5 text-xs transition-colors',
+          selectedCount > 0
+            ? 'border-zinc-900/10 bg-zinc-900 text-zinc-100 dark:border-zinc-100/10 dark:bg-zinc-100 dark:text-zinc-900'
+            : 'border-zinc-200/90 bg-white text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400',
+        )}
+      >
         <label
-          className={cn('inline-flex min-w-0 items-center gap-2 font-medium cursor-pointer group', !hasFilteredItems && 'opacity-50 pointer-events-none')}
+          className={cn(
+            'inline-flex min-w-0 cursor-pointer items-center gap-2 font-medium',
+            !hasFilteredItems && 'pointer-events-none opacity-50',
+          )}
         >
           <Checkbox
             checked={allFilteredSelected ? true : hasPartialSelection ? 'indeterminate' : false}
+            className={
+              selectedCount > 0
+                ? 'border-zinc-500 bg-transparent data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-zinc-900 data-[state=indeterminate]:border-white data-[state=indeterminate]:bg-white data-[state=indeterminate]:text-zinc-900 dark:border-zinc-400 dark:data-[state=checked]:border-zinc-900 dark:data-[state=checked]:bg-zinc-900 dark:data-[state=checked]:text-white dark:data-[state=indeterminate]:border-zinc-900 dark:data-[state=indeterminate]:bg-zinc-900 dark:data-[state=indeterminate]:text-white'
+                : undefined
+            }
             disabled={!hasFilteredItems}
             onCheckedChange={(checked) => onToggleSelectAll(checked === true)}
           />
-          <span className="truncate group-hover:text-zinc-950 dark:group-hover:text-zinc-100">{t('selectAll', 'Select all')}</span>
-          {selectedCount > 0 ? (
-            <span className="rounded-full bg-sky-50 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
-              {selectedCount}
-            </span>
-          ) : null}
+          <span className="truncate">
+            {selectedCount > 0
+              ? t('selectedCount', '$1 selected', [String(selectedCount)])
+              : t('selectAll', 'Select all')}
+          </span>
         </label>
+
         {selectedCount > 0 ? (
-          <div className="flex shrink-0 items-center gap-0.5 animate-in fade-in duration-200">
+          <div className="flex shrink-0 items-center gap-0.5">
             <Button
               aria-label={t('copySelected', 'Copy')}
-              className="h-6 px-1.5 gap-1 text-[11px] text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white"
+              className="h-7 gap-1 px-2 text-[11px] font-medium text-white hover:bg-white/10 hover:text-white dark:text-zinc-900 dark:hover:bg-zinc-900/10 dark:hover:text-zinc-900"
               title={t('copySelected', 'Copy')}
               type="button"
               variant="ghost"
@@ -179,7 +268,7 @@ export function FilterBar({
             </Button>
             <Button
               aria-label={t('cutSelected', 'Cut')}
-              className="h-6 px-1.5 gap-1 text-[11px] text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white"
+              className="h-7 gap-1 px-2 text-[11px] font-medium text-white hover:bg-white/10 hover:text-white dark:text-zinc-900 dark:hover:bg-zinc-900/10 dark:hover:text-zinc-900"
               title={t('cutSelected', 'Cut')}
               type="button"
               variant="ghost"
@@ -190,7 +279,7 @@ export function FilterBar({
             </Button>
             <Button
               aria-label={t('deleteSelected', 'Delete')}
-              className="h-6 px-1.5 gap-1 text-[11px] text-zinc-500 hover:bg-red-50 hover:text-red-700 dark:text-zinc-400 dark:hover:bg-red-950/50 dark:hover:text-red-200"
+              className="h-7 gap-1 px-2 text-[11px] font-medium text-red-300 hover:bg-red-500/15 hover:text-red-200 dark:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-700"
               title={t('deleteSelected', 'Delete')}
               type="button"
               variant="ghost"
@@ -201,11 +290,9 @@ export function FilterBar({
             </Button>
           </div>
         ) : (
-          <div className="flex shrink-0 items-center gap-2">
-            <span className="text-xs font-medium text-zinc-500 transition-colors dark:text-zinc-400">
-              {t('shownCount', '$1 shown', [String(filteredCount)])}
-            </span>
-          </div>
+          <span className="shrink-0 tabular-nums text-[11px] font-medium">
+            {t('shownCount', '$1 shown', [String(filteredCount)])}
+          </span>
         )}
       </div>
     </section>

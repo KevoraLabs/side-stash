@@ -8,6 +8,13 @@ export type SavedItem = {
   pageTitle?: string;
   pageUrl?: string;
   createdAt?: string;
+  pinned?: boolean;
 };
 
 export type ItemFilter = SavedItem['type'] | 'all';
+export type DateFilter = 'all' | 'today' | 'yesterday' | 'week';
+export type CopyFormat = 'plain' | 'markdown' | 'source';
+
+export type PanelPreferences = {
+  copyFormat: CopyFormat;
+};

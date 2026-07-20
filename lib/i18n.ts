@@ -1,13 +1,13 @@
 import { browser } from 'wxt/browser';
-import deMessages from '../public/_locales/de/messages.json';
-import enMessages from '../public/_locales/en/messages.json';
-import esMessages from '../public/_locales/es/messages.json';
-import frMessages from '../public/_locales/fr/messages.json';
-import jaMessages from '../public/_locales/ja/messages.json';
-import koMessages from '../public/_locales/ko/messages.json';
-import ptBrMessages from '../public/_locales/pt_BR/messages.json';
-import zhMessages from '../public/_locales/zh_CN/messages.json';
-import zhTwMessages from '../public/_locales/zh_TW/messages.json';
+import deMessages from '../locales/de/messages.json';
+import enMessages from '../locales/en/messages.json';
+import esMessages from '../locales/es/messages.json';
+import frMessages from '../locales/fr/messages.json';
+import jaMessages from '../locales/ja/messages.json';
+import koMessages from '../locales/ko/messages.json';
+import ptBrMessages from '../locales/pt_BR/messages.json';
+import zhMessages from '../locales/zh_CN/messages.json';
+import zhTwMessages from '../locales/zh_TW/messages.json';
 
 export type SupportedLocale = 'en' | 'ja' | 'zh_CN' | 'zh_TW' | 'ko' | 'fr' | 'de' | 'es' | 'pt_BR';
 export type LanguageMode = 'auto' | 'manual';
