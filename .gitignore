@@ -5,3 +5,7 @@ node_modules/
 .env.submit
 
 chrome-mv3/
+
+# local imagegen intermediates (final assets live in docs/store-assets/)
+docs/imagegen-store-assets/
+docs/generated/
